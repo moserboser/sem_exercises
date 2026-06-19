@@ -1534,6 +1534,7 @@ summary(fit10x.3)
 
 # Messinvarianz Modelle
 
+
 ## Theoretische Fragen: 
 
 ### Wo kann Messinvarianz festgestellt werden?
@@ -1553,5 +1554,353 @@ und die Standardabweichung = 1 gesetzt. Das ist da für die Identifizierbarkeit 
 ### Was stellen wir mit konfiguraler Messinvarianz sicher? 
 
 Das Messmodell selber (Items laden auf einem Faktor etc.) aber auch, dass alle 
-Items die gleiche Skala haben. Aus diesem
+Items die gleiche Skala haben (Wir setzen ja die Ladungen des ersten Indikators 
+über alle Messwellen (oder Personengruppen) gleich > folglich gibt es keine relevanten
+Unterschiede, die stark ins Gewicht fallen würden.
+
+### Wenn wir Mittelwerte zwischen zwei Gruppen (zB. deutschen und schweizer Jugendlichen) auf einer Skala vergleichen wollen, welches Niveau an Messinvarianz braucht es? 
+
+Starke Messinvarianz.
+
+### Wenn wir ein CLP modell berechnen, welches Invarianz Miveau muss vorliergen? Was erlaubt/ zeigt dieses Niveau an Messinvarianz?
+
+Schwache Messinvarianz (Nur dann dürfen wir korrelationen zwischen den Messzeitpunkten erst berechnen.
+Ein unterschied von 1.0 auf dem Latenten Faktor bedeutet zu jedem Messzeitpunkt das gleiche.
+Erlaubt Test auf Gleichheit der Varianzen der latenten Faktoren.
+
+### Was bedeutet Strikte Messinvarianz bezüglich dem Nullpunkt der Skala der latenten Variablen?
+
+Der Nullpunkt der Skala ist in diesem Fall bei allen Variablen der gleiche.
+
+## Exercises
+
+```{r}
+rm(list = ls())
+data = read_xlsx("./data/dallarosa.xlsx")
+```
+
+
+### Erstelle ein Konfigurales Messinvarianz Modell über Messzeitpunkte hinweg für calling im dallrosa datensatz.
+
+```{r}
+model11x.1 <- "
+# measurement model:
+call1 =~ a*call1a + call1b + call1c
+call2 =~ a*call2a + call2b + call2c
+call3 =~ a*call3a + call3b + call3c
+
+# intercepts of indicators:
+call1a ~ d*1 
+call2b ~ 1
+call3c ~ 1
+call2a ~ d*1 
+call2b ~ 1
+call2c ~ 1
+call3a ~ d*1 
+call3b ~ 1
+call3c ~ 1
+
+# residual variances
+call1a ~~ call1a 
+call2a ~~ call2a 
+call3a ~~ call3a 
+call1b ~~ call1b 
+call2b ~~ call2b 
+call3b ~~ call3b 
+call1c ~~ call1c 
+call2c ~~ call2c 
+call3c ~~ call3c 
+
+# residual covariances
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ 0*1
+call2 ~ 1 
+call3 ~ 1
+
+# variances
+call1 ~~ 1*call1
+call2 ~~ call2 
+call3 ~~ call3
+
+# covariances
+call1 ~~ call2 
+call1 ~~ call3
+call2 ~~ call3
+"
+
+fit11x.1 <-lavaan::lavaan(model11x.1, data = data, missing = "ML")
+```
+
+### Constraints einfügen, damit ein Modell mit schwacher Messinvarianz entsteht
+
+```{r}
+
+model11x.2 <- "
+# measurement model:
+call1 =~ a*call1a + b*call1b + c*call1c
+call2 =~ a*call2a + b*call2b + c*call2c
+call3 =~ a*call3a + b*call3b + c*call3c
+
+# intercepts of indicators:
+call1a ~ d*1 
+call2b ~ 1
+call3c ~ 1
+call2a ~ d*1 
+call2b ~ 1
+call2c ~ 1
+call3a ~ d*1 
+call3b ~ 1
+call3c ~ 1
+
+# residual variances
+call1a ~~ call1a 
+call2a ~~ call2a 
+call3a ~~ call3a 
+call1b ~~ call1b 
+call2b ~~ call2b 
+call3b ~~ call3b 
+call1c ~~ call1c 
+call2c ~~ call2c 
+call3c ~~ call3c 
+
+# residual covariances
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ 0*1
+call2 ~ 1 
+call3 ~ 1
+
+# variances
+call1 ~~ 1*call1
+call2 ~~ call2 
+call3 ~~ call3
+
+# covariances
+call1 ~~ call2 
+call1 ~~ call3
+call2 ~~ call3
+"
+
+fit11x.2 <- lavaan::lavaan(model11x.2, data = data, missing = "ML")
+
+```
+
+### Nun ein Modell mit starker Messinvarianz testen
+
+```{r}
+
+model11x.3 <- "
+# measurement model:
+call1 =~ a*call1a + b*call1b + c*call1c
+call2 =~ a*call2a + b*call2b + c*call2c
+call3 =~ a*call3a + b*call3b + c*call3c
+
+# intercepts of indicators:
+call1a ~ d*1 
+call2b ~ e*1
+call3c ~ f*1
+call2a ~ d*1 
+call2b ~ e*1
+call2c ~ f*1
+call3a ~ d*1 
+call3b ~ e*1
+call3c ~ f*1
+
+# residual variances
+call1a ~~ call1a 
+call2a ~~ call2a 
+call3a ~~ call3a 
+call1b ~~ call1b 
+call2b ~~ call2b 
+call3b ~~ call3b 
+call1c ~~ call1c 
+call2c ~~ call2c 
+call3c ~~ call3c 
+
+# residual covariances
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ 0*1
+call2 ~ 1 
+call3 ~ 1
+
+# variances
+call1 ~~ 1*call1
+call2 ~~ call2 
+call3 ~~ call3
+
+# covariances
+call1 ~~ call2 
+call1 ~~ call3
+call2 ~~ call3
+"
+
+fit11x.3 <- lavaan::lavaan(model11x.3, data = data, missing = "ML")
+```
+
+```{r}
+comp <- semTools::compareFit(fit11x.1,fit11x.2,fit11x.3)
+summary(comp)
+```
+
+### Strikte Invarianz
+
+```{r}
+
+model11x.4 <- "
+# measurement model:
+call1 =~ a*call1a + b*call1b + c*call1c
+call2 =~ a*call2a + b*call2b + c*call2c
+call3 =~ a*call3a + b*call3b + c*call3c
+
+# intercepts of indicators:
+call1a ~ d*1 
+call2b ~ e*1
+call3c ~ f*1
+call2a ~ d*1 
+call2b ~ e*1
+call2c ~ f*1
+call3a ~ d*1 
+call3b ~ e*1
+call3c ~ f*1
+
+# residual variances
+call1a ~~ g*call1a 
+call2a ~~ h*call2a 
+call3a ~~ i*call3a 
+call1b ~~ g*call1b 
+call2b ~~ h*call2b 
+call3b ~~ i*call3b 
+call1c ~~ g*call1c 
+call2c ~~ h*call2c 
+call3c ~~ i*call3c 
+
+# residual covariances
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ 0*1
+call2 ~ 1 
+call3 ~ 1
+
+# variances
+call1 ~~ 1*call1
+call2 ~~ call2 
+call3 ~~ call3
+
+# covariances
+call1 ~~ call2 
+call1 ~~ call3
+call2 ~~ call3
+"
+
+fit11x.4 <- lavaan(model11x.4, data = data, missing = "ML")
+```
+
+### Vergleiche die drei Modelle 
+
+```{r}
+summary(compareFit(fit11x.1, fit11x.2, fit11x.3), o)
+```
+
+
+### Teste zudem auf gleichheit der Varianzen und gleichheit der Mittelwerte zwischen den Messzeitpunkten. Welche Modelle müssen dafür verwendet werden?
+
+Für einen Test auf Varianzgleichheit, muss mindestens schwache Invarianz vorliegen > Hier model 11x.2
+
+```{r}
+model11x.2.var <- "
+# measurement model:
+call1 =~ a*call1a + b*call1b + c*call1c
+call2 =~ a*call2a + b*call2b + c*call2c
+call3 =~ a*call3a + b*call3b + c*call3c
+
+# intercepts of indicators:
+call1a ~ d*1 
+call2b ~ 1
+call3c ~ 1
+call2a ~ d*1 
+call2b ~ 1
+call2c ~ 1
+call3a ~ d*1 
+call3b ~ 1
+call3c ~ 1
+
+# residual variances
+call1a ~~ call1a 
+call2a ~~ call2a 
+call3a ~~ call3a 
+call1b ~~ call1b 
+call2b ~~ call2b 
+call3b ~~ call3b 
+call1c ~~ call1c 
+call2c ~~ call2c 
+call3c ~~ call3c 
+
+# residual covariances
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ 0*1
+call2 ~ 1 
+call3 ~ 1
+
+# variances
+call1 ~~ 1*call1
+call2 ~~ 1*call2  # <--- changes here
+call3 ~~ 1*call3 # <--- and changes here
+
+# covariances
+call1 ~~ call2 
+call1 ~~ call3
+call2 ~~ call3
+"
+
+fit.
+
+```
 
