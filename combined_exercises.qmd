@@ -1542,3 +1542,16 @@ summary(fit10x.3)
 
 ### Welche Arten von Messinvarianz gibt es?
 
+Einfache (Konfigurale), schwache (ladungen sind gleich), starke (intercepts der Indikatoren)
+Strikte: Gleichsetzung der Residualvarianzen.
+
+### Was wird in Lavaan fixiiert, bei der Schätzung von Messinvarianz (bereits bei der Konfiguralen)?
+
+Zusätzlich zu der Ladung des ersten Indikators, wird der Mittelwert der ersten latenten Variable = 0 
+und die Standardabweichung = 1 gesetzt. Das ist da für die Identifizierbarkeit des Modells.
+
+### Was stellen wir mit konfiguraler Messinvarianz sicher? 
+
+Das Messmodell selber (Items laden auf einem Faktor etc.) aber auch, dass alle 
+Items die gleiche Skala haben. Aus diesem
+
