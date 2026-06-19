@@ -1,0 +1,1544 @@
+---
+title: "title"
+subtitle: "A Quarto Template with Ten Chapters"
+author: "Your Name"
+date: today
+format:
+  html:
+    theme: flatly           
+    highlight-style: github   
+    code-overflow: wrap
+    code-copy: true
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| echo: false
+
+library(tidyverse)
+```
+
+## System Information
+
+The session and system information below documents the environment in which
+this report was rendered.
+
+```{r}
+#| label: system-info
+#| echo: false
+#| code-fold: false
+Sys.info()[c("sysname", "release", "machine", "user")]
+sessionInfo()
+```
+
+# Libraries und Dependencies
+
+```{r}
+library(tidyverse)
+library(lavaan)
+library(semTools)
+library(readr)
+library(readxl)
+```
+
+
+# Einführung
+
+## Wissensfragen: 
+
+### Was sind dtrukturelle Gleichungsmodelle?
+
+Eine vielzahl an Methoden (insbesondere regressionanalytische und faktorenanalytische), die verwendet werden können, um reduktionen in der Komplexität von Daten zu testen.
+Dabei werden Varianzen, Kovarianzen und Korrelationen andhand von Strukturgleichungen geschätzt.
+
+Die Modelle gehen in der Regel von einer latenten Struktur aus, die gewisse Einschränkungen bezüglich der beobachteten Varianzen, Kovarianzen und Korrelationen bedingt. 
+Eine Hypothese kann durch den Vergleich zwischen Modellen oder dem Testen einzelner Modelle angeschaut werden. Dabei wird oft ein Schmaler Grad zwischen 
+Induktion und Hypothetischer Deduktion gegangen.
+
+### Unterscheide die Pfadanalyse von der konfirmatorischen Faktorneanalyse. Was unterscheidet die beiden Ansätze?
+
+- Im Rahmen der Pfadanalyse werden **nur** manifeste Variablen angeschaut. 
+Dabei wird zwischen endogenen und exogenen Variablen unterschieden auf Exogene 
+Variablen zeigt kein gerichter Pfeil. Auf endogene Variablen zeit ein gerichteter Pfeil.
+- Im Rahmen der KFA werden zusätzliche Latente (also rein theoretisch angenommene) Variablen 
+angeschaut. Zusammenhänge sind dabei *nie* gerichtet, sondern nur korrelativ. 
+
+### Was ist das Ziel von Lavaan, wofür wird das Package verwendet?
+
+
+### Worauf basiert Lavaan syntax ganz generell? 
+
+Der Syntax basiert auf Regressionsgleichungen in R. 
+Dabei werden ebenfals (wie im *lm* package) per default keine Intercepts und keine Fehlervarianzen modelliert.
+Ein ganz grundlegender Syntax kann dabei so aussehen:
+
+Im Unteren Beispiel spezifizieren wir den *strukturellen* Teil des Messmodelles. Das bedeuete, dass wir angeben, wie Variablen zusaamenhängen. 
+
+```{r}
+model0.1 <- "y1 ~ x1 + x2 + x3 # note that y_0 and e are missing 
+y2 ~ x4 + x5 + x6 
+y3 ~ y1 + y2  
+"
+```
+### Welche Variablen Spezifikationen sind in Lavaan über dies zulässig?
+
+Folgende Spezfifikationen sind zulässig:
+
+```{r}
+model0.2 <- " y1 =~ x1 + x2 + x2 # is manifested by 
+y2 =~ x3 + x4 
+y3 =~ x4 + x5 
+
+y1 ~ y2 # is regressed on
+y3 ~~ y2 # is correlated with
+y1 ~ 1 # intercept
+haftbefehl := y3*0.5 # is defined as 
+x3 == x4 # equality constraint
+x3 < x5 # is larger than  (also works with is smaller than)
+"
+```
+
+As a general note: Die Reihenfolge in der Variablen in Lavaan definiert ist, 
+spielt keine Rolle. 
+
+### Warum müssen wir in Lavaan die erste Ladung eines Indikatoren auf 1 fixieren,  und die Residualvarianz einer 
+*einzelnen Indikatoravariablen* auf 0 fixieren? 
+
+Damit Modelle (In denen keine Mittelwertsstruktur geschätzt wird) identifizerbar sind.
+Das ist deshalb der Fall, weil die Skalen unserer Latenten Variablen artifiziell Konstruiert sind (Intervallskalen).
+Im Vergleich zu Ratioskalen, haben solche Skalen keinen Nullpunkt. 
+
+Wenn zusätzlich eine Mittlwertsstruktur geschätzt wird, müssen wir ebenfalls die 
+Mittelwerte beobachteter und latenter Variablen frei Schätzen.
+
+### How can one get the parameter estimates from a fitted lavaan object if one is not interested in a tidy output?
+
+With: 
+```{r}
+# parameterEstimates(fitted_model)
+```
+
+This will return a dataframe with all estimated parameters of the model.
+
+
+### Wenn wir in Lavaan Labels vergeben, warum labeln wir die ersten Indikatoren nicht?   
+
+Weil die Ladungen dieser Indikattoren auf 1 festgelegt sind.
+
+### Welche Teile können in Strukturgleichungsmodellen generell unterschieden werden?
+
+Ein "Messmodell" und ein Strukturmodell.  
+Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein Strukturmodell
+ist hingegen auf die gerichteten Zusammenhänge zwischen latenten Konsturkuten ausgerichtet, 
+die durch Messmodelle beschrieben werden.
+
+
+### Was sind drei Gefahren bei der Verwendung von SEM?  
+
+- Übergeneralisierung der Ergebnisse (von der  *jetzigen* *lokalen* zu einer *globalen und zeitlich kontinuierlichen* Population ). 
+-  bei Ergebnisdarstellung in Modellform häufiger Fehlschluss, dass die an einer Stichprobe gewonnenen Ergebnisse für die Population gültig sind ▪ Confirmation Bias ▪ bei gutem Modellfit häufig Vernachlässigung von möglicherweise besseren Alternativmodellen 
+- Unzulässige Kausalinterpretation gerichteter Pfade: häufige – jedoch falsche – Annahme, die Kausalität gerichteter Pfade werde generell durch Strukturgleichungsmodelle bestätigt 
+
+```{r}
+# everything is regressions 
+syntax <- 
+```
+
+### Wie können wir im Rahmen von SEM komplexitätsreduzierende Massnahmen vornehmen?
+
+Wir können Parameter Fixieren, einschränken (idr. equality constraints einführen). 
+Wenn wir Parameter frei schätzen, findet keine Komplexitätsreduktion statt.
+
+### Please describe the way in which the output of measurement objects given by summary can be analyzed
+
+Bei intercepts: 
+Variablen mit Punkt davor = intercepts, sonst mittlwerte.
+
+Bei Varianzen:
+Mit Punkt Davor = residuals. Ohne Punkt davor = Varianzen.
+
+(basically, das Zeugs aus einer Regression ist mit Punkten)
+
+## Exercises
+
+```{r}
+rm(list = ls())
+library(readxl)
+library(lavaan)
+library(semTools)
+```
+
+
+
+### Erstelle ein Messmodell mit calling t1. Welche Funktion verwenden sie dazu, warum? Zudem: Füge dem Modell Residualkorrelationen hinzu 
+
+
+```{r}
+data <- read_xlsx("./data/dallarosa.xlsx")
+
+model1 <- "
+# latent factors
+call1 =~ call1a + call1b + call1c
+call2 =~ call2a + call2b + call2c
+call3 =~ call3a + call3b + call3c
+
+# residual correlations
+call1a ~~ call2a 
+call1a ~~ call3a
+call2a ~~ call3a
+
+call1b ~~ call2b 
+call1b ~~ call3b
+call2b ~~ call3b
+
+call1c ~~ call2c 
+call1c ~~ call3c
+call2c ~~ call3c
+"
+
+fit1 <- lavaan::cfa( model1, data =  data)
+lavaan::parameterestimates(fit1)
+lavaan::summary(fit1, standardized = TRUE)
+```
+
+### Erstellen Sie das Messmodell für engaged learning. Fügen sie direkte Pfade für Messzeitpunkten ein.
+
+```{r}
+data %>% select(starts_with("enle"))
+
+model2 <- "
+enle1 =~ enle1a + enle1b + enle1c
+enle2 =~ enle2a + enle2b + enle2c
+enle3 =~ enle3a + enle3b + enle3c
+
+enle2 ~ enle1 
+enle3 ~ enle2
+
+enle1a ~~ enle2a 
+enle1a ~~ enle3a 
+enle2a ~~ enle3a 
+
+enle1b ~~ enle2b
+enle1b ~~ enle3b
+enle2b ~~ enle3b
+
+enle1c ~~ enle2c
+enle1c ~~ enle3c
+enle2c ~~ enle3c
+"
+
+fit2 <- lavaan::sem(mode = model2, data = data, missing = "ML")
+lavaan::summary(fit2, standardized = T)
+
+```
+
+
+# Missing data
+
+### Welche unterschiedlichen Arten von Missing Data kennen wir? Gib jeweils ein Beispiel
+
+MAR (missing at random): Ob ein Wert fehlt ist unabhängig vom wahren Wert der eigenen Variable, wenn für andere Variablen im Datensatz kontrolliert wurde.
+MCAR (missing completely at random): Fehlende Werte unabhängig von Werten im Datensatz (Wahre Werte und nicht wahre Werte)
+MNAR (missing not at random): missing data are dependent upon the true values on the variable itself > fex. the higher the temperature, the higher 
+
+### Was sind einige Probleme von listwise deletion? 
+
+Wenn daten MCAR sind zwar okay, aber nur wenn nicht mehr als 2% der Fälle gelöscht werden.
+Problem: Es kann oft dazu kommen, dass mehr Daten gelöscht werden wenn viel Variablen im Datensatz sind.
+
+### Was sollte anstelle von listwise deletion gemacht werden?
+
+Mulitple Imputation oder Full information Maximum Likelihood.
+Full Information Maximum Likelihood schätzt die Modellparameter unter berücksichtigung der Missingness "on the fly", während multiple imputation die vermissten Daten direkt schätzt. 
+Im Seminar verwenden FIML.
+
+
+### wie sind latente Variablen in Messmodellen verbunden?
+
+Sie korrelieren oder sind nicht verbunden. 
+**Wichtig ist:** per default korrelieren Konstrukte. Wenn sie nicht korrelieren, dann bedeutet das, 
+dass wir die Daten einschränken. Wenn wir sie korrelieren lassen, schränken wir die (neu geschätzten) Daten nicht ein.
+
+## Exercises
+
+### create a dataset with MAR and a dataset with MCAR based on the same underlying data
+
+```{r}
+rm(list = ls())
+
+# use the missMethods packageer
+library(missMethods)
+
+data <- read_xlsx("./data/example1.xlsx")
+data_mar <- missMethods::delete_MAR_censoring(data, 0.3, cols_mis = "cubes", cols_ctrl = "visperc")
+data_mcar <- missMethods::delete_MCAR(data, 0.3, cols_mis = "cubes")
+
+```
+
+### Why should we prefeer FIML over listiwse deletion?
+
+Listwise can be problemetaic bc. we loose lots of information (Only if 2% of vars affected ok). 
+Listwise biases our estimation if data is not MCAR. 
+
+Bei FIML deletion ist zudem (egal welche Variablen aus dem Datensatz gebraucht werden) der 
+Datensatz immer der selbe. Bei listwise deletion werden je nach Datensatz (und Variablen die wir analysiseren) unterschiedlich viele Variablen aus dem Datensatz gelöscht.
+
+# Modellevalation
+
+### Was ist ein Problem bei der Verwendung des Chisquared tests zur Modellevaluation?
+
+Durch SEM testen wir theoretische Modelle. Theoretische Modelle vereinfachen die Realität.
+Der Chisquared Test testet gegen Abweichung von der Realität, ohne die Parsimonität (die wir ja wollen) 
+eines Modelles zu berücksichtigen. Bei ausreichender Power wird er ein Modell deshalb immer ablehnen.
+Wir wollen aber nicht alleine einen Test für Power, sondern ebenfalls einen Test der unsere
+Parsimonität mit ins Modell aufnimmt.
+
+Der Signifikanztest des Chisquared tests Sollte deshalb nicht beachtet werden.
+
+
+### Welche anderen fit Indizes sind vorhanden?
+
+
+#### RMSEA
+
+Werte können zwischen 0 und 1 liegen. 
+Konfidenzintervall bekannt. Sollte unter 0.06 liegen (nicht wie in output)
+
+#### CFI 
+
+Sollte über 0.95 liegen (Hu und Bentler), teils auch 0.9 akzeptabel
+
+#### TLI/NNFI 
+
+same wie CFi
+
+#### SRMR 
+
+SRMR sollte unter 0.08 liegen.
+
+
+### Welche Werte können bei Modellvergleichen herangezogen werden?
+
+#### Chisq diff 
+
+chisquared verteilt. 
+Auch hier haben wir das Problem der Stichprobenabhängigkeit
+
+#### d cfi
+
+Sollte unter 0.01 liegen. > Dann wird das Sparsamere Modell gewählt.
+Kein Signifikanztest möglich.
+
+#### AIC, BIC
+
+Niedrigere Werte besser, 
+Berücksichtigen Parsimonität. 
+Es ist aber kein Signifikanztest möglich.
+
+#### Problem mit reinem rmsea vergleich?
+
+Kann bedeutsame Fit unterschiede dann maskieren, wenn beide Modelle bereits 
+hohe unterschiede im Fit aufweisen.
+
+#### rmsead
+
+Differenz der Freiheitsgrade und Differenz der Modelle gehen in das Modell ein.
+Je grösser Freiheitsgrade der Modelle, desto kleiner der Wert. 
+Desto grösser die Differenz/ Abweichung der Modelle, desto grösser der Wert.
+
+Cutoff 0.08 oder 0.1 > Hier 0.08
+Nice ist: Es kann ein Konfidenzintervall Berechnet werden.
+
+
+## Exercises
+
+### Finde den Fehler im folgenden Modell:
+
+```{r}
+model4x.1 <- '
+  # measurement model
+    call1 =~ call1a + call1b + call1c
+    call2 =~  call2a + call2b + call2c # <- N1
+    call3 =~ call3a + call3b + call3c
+    enle1 =~ enle1a + enle1b + enle1c
+    enle2 =~ enle2a + enle2b + enle2c
+    enle3 =~ enle3a + enle3b + enle3c
+  # stability effects
+    call2 ~ call1
+    call3 ~ call2
+    enle2 ~ enle1
+    enle3 ~ enle2
+  # cross-lagged effects
+    call2 ~ enle1
+    call3 ~ enle2
+    enle2 ~ call1
+    enle3 ~ call2
+  # covariances
+    call1 ~~ enle1
+    call2 ~~ enle2
+    call3 ~~ enle3
+    # <- Korrelationen der Items entfernt, die durch gerichtete Pfade verbunden waren
+  # correlated residuals
+    call1a ~~ call2a + call3a
+    call2a ~~ call3a            
+    call1b ~~ call2b + call3b
+    call2b ~~ call3b            
+    call1c ~~ call2c + call3c
+    call2c ~~ call3c            
+    enle1a ~~ enle2a + enle3a
+    enle2a ~~ enle3a            
+    enle1b ~~ enle2b + enle3b
+    enle2b ~~ enle3b            
+    enle1c ~~ enle2c + enle3c
+    enle2c ~~ enle3c # added this correlation
+'
+
+```
+
+### Wie ist der Modellfit einzuschätzen?- Repetiere dabei alle fit indizes
+
+
+```{r}
+fit4x.1 <- lavaan::sem(model = model4x.1, data = data, missing = "ml")
+summary(fit4x.1, fit.measures = T)o
+
+
+```
+It is important to keep in mind that: 
+srmr = 0.08 und rmsea = 0.06 als cutoff. 
+auch zielmich wichtig: um den RMSEA kann ein Konfidenzintervall 
+gezogen werdne. 
+
+### REHEARSE: Gleichsetzung der Ladungen der Indikatoren in model4x.1 
+
+Hier besonders wichtig, dass Über, die Messzeitpunkte bedeutet, dass die Ladungen
+innerhalb eines Items über die Messzeitpunkte gleich bleiben. Zudem sollten die 
+Ladungen bei einem Item nicht gleichgesetzt werden?
+```{r}
+model4x.2 <- '
+  # measurement model
+    call1 =~ call1a + a*call1b + b*call1c
+    call2 =~ call2a + a*call2b + b*call2c # <- N1
+    call3 =~ call3a + a*call3b + b*call3c
+    enle1 =~ enle1a + c*enle1b + d*enle1c
+    enle2 =~ enle2a + c*enle2b + d*enle2c
+    enle3 =~ enle3a + c*enle3b + d*enle3c
+  # stability effects
+    call2 ~ call1
+    call3 ~ call2
+    enle2 ~ enle1
+    enle3 ~ enle2
+  # cross-lagged effects
+    call2 ~ enle1
+    call3 ~ enle2
+    enle2 ~ call1
+    enle3 ~ call2
+  # covariances
+    call1 ~~ enle1
+    call2 ~~ enle2
+    call3 ~~ enle3
+    # <- Korrelationen der Items entfernt, die durch gerichtete Pfade verbunden waren
+  # correlated residuals
+    call1a ~~ call2a + call3a
+    call2a ~~ call3a            
+    call1b ~~ call2b + call3b
+    call2b ~~ call3b            
+    call1c ~~ call2c + call3c
+    call2c ~~ call3c            
+    enle1a ~~ enle2a + enle3a
+    enle2a ~~ enle3a            
+    enle1b ~~ enle2b + enle3b
+    enle2b ~~ enle3b            
+    enle1c ~~ enle2c + enle3c
+    enle2c ~~ enle3c # added this correlation
+'
+fit4x.2 <- lavaan::sem(model = model4x.2, data = data, missing = "ML")
+
+```
+
+### Vergleichen von Modell 4.1 und 4.2. Welche funktionen könnte dafür verwendet werden? Was sind die relevanten Fit indizes? Welche Unterschiede sollten beobachtete werden?
+
+```{r}
+# mit compareFit von semtools
+summary(semTools::compareFit(fit4x.1, fit4x.2))
+
+# rmsead 
+lavaan::fitmeasures(fit4x.2, "rmsea", h1.model = fit4x.1 ) # weniger restriktives modell ist h1
+```
+Cfi von unter 0.01 sowie ein tieferer AIC oder BIC zeigen einen besseren Modellfit an.
+smaller aic and smaller bic, kein signifikanter chisq test.
+
+rmsead sollte unter 0.08 liegen kommen. Hier der fall mit 0.014
+
+### Modell fitten, in dem die Stabilitäten und prospektiven wechselseitigen Effekte über die Messzeitpnkte gleichgesetzt sind.
+
+```{r}
+
+model4x.3 <- '
+  # measurement model
+    call1 =~ call1a + a*call1b + b*call1c
+    call2 =~ call2a + a*call2b + b*call2c # <- N1
+    call3 =~ call3a + a*call3b + b*call3c
+    enle1 =~ enle1a + c*enle1b + d*enle1c
+    enle2 =~ enle2a + c*enle2b + d*enle2c
+    enle3 =~ enle3a + c*enle3b + d*enle3c
+  # stability effects kept equal accross (not within) measurement timepoints
+    call2 ~ e*call1
+    call3 ~ e*call2
+    enle2 ~ f*enle1
+    enle3 ~ f*enle2
+  # cross-lagged effects kept equal accross (not within measueremtn timepoints)
+    call2 ~ g*enle1
+    call3 ~ g*enle2
+    enle2 ~ h*call1
+    enle3 ~ h*call2
+  # covariances
+    call1 ~~ enle1
+    call2 ~~ enle2
+    call3 ~~ enle3
+    # <- Korrelationen der Items entfernt, die durch gerichtete Pfade verbunden waren
+  # correlated residuals
+    call1a ~~ call2a + call3a
+    call2a ~~ call3a            
+    call1b ~~ call2b + call3b
+    call2b ~~ call3b            
+    call1c ~~ call2c + call3c
+    call2c ~~ call3c            
+    enle1a ~~ enle2a + enle3a
+    enle2a ~~ enle3a            
+    enle1b ~~ enle2b + enle3b
+    enle2b ~~ enle3b            
+    enle1c ~~ enle2c + enle3c
+    enle2c ~~ enle3c # added this correlation
+'
+fit4x.3 <- sem(model = model4x.3, data = data, missing = "ML")
+
+```
+
+### compare fit of model 4.2 and model 4.3
+
+```{r}
+summary(semTools::compareFit(fit4x.2, fit4x.3))
+lavaan::fitmeasures(fit4x.3, "rmsea", h1.model = fit4x.2)
+```
+
+### Den generellen Modellfit bewerten
+
+
+```{r}
+summary(fit4x.3, standardized = T, fit.measure = T)
+<!-- ``` -->
+
+
+# Messmodell
+
+### Was sollte in Messmodellen sichergestellt werden?
+
+Diskriminante und Konvergente Validität (Indikatoren auf dem gleichen Konstrukt sollten korrelieren, Indikatoren
+auf verschiedenen Konstrukten sollten nicht korrelieren.)
+
+### Was kann neben korrelationen zwischen Faktoren noch Modelliert werden?
+
+Korrelationen zwischen Residuen, Korrelationen zwischen Faktoren zweiter Ordnung.
+Korrelationen zwischen residuen können insbesondere Sinnvoll sein, weil sie 
+Methodenfaktoren darstellen können.
+
+
+### Was sind die zwei Bedingungen, für die Indentifizierbarkeit von Modellen? 
+
+1. Jede latente Variable muss eine Skala haben > Ladung des ersten Indikators
+auf eins setzen oder varianz der latenten Variablen auf 1 festlegen (nicht möglich bei endogenen variablen).
+
+
+2. Zahl der beobachteten Variablen muss mindestens so gross sein wie 
+Zahl der zu schätzenden Variablen.
+
+```{r}
+#| label: eda
+# data_clean %>%
+#   ggplot(aes(x = value)) +
+#   geom_histogram()
+```
+
+
+### Was sind Vorteile, was Nachteile von Parceling? Wann sollte Parcellig ev. besser nicht verwendet werden?
+
+Vorteile sind: 
+Höhere Reliabilität, Höhere Kommunalität (Geteilte Varianz Parcels mit dem Konstrukt), Weniger Verletzungen der Normalverteilungsannahme.
+
+
+Nachteile sind: 
+Insbesondere im Falle von psychometrischer Validierung ein Verlust über die Informationen zu einzelnen Items. 
+- Keine Itemspezifischen Infos
+- Multidimensionalität von Konstrukten kann verschleiert werden.
+
+
+### Wie sollte nach der VL beim Parcelling vorgegangen werden?
+
+1. 3 parcels pro konstrukt (parcelling methode, zb. Zufall theoretisch ebegründen) 
+2. Items müssen auf gleicher skala sein, ansonsten normalisieren.
+
+### Was ist die two step Strategie nach Kline (2005)?
+
+Test des Gesamtmodells ohne kausale Pfade zwischen den Konstrukten, aber mit sämtlichen möglichen Korrelationen zwischen den Konstrukten.
+-> Gesammter Missfit ist auf das Messmodell zurückzuführen.
+
+
+
+```{r}
+
+```
+
+
+# Messmodelle
+
+## Lecture stuff
+tbd.
+
+## Exercises 
+
+```{r}
+rm(list = ls())
+data <- readxl::read_xlsx("./data/dallarosa.xlsx")
+```
+
+### REHEARSE: Was muss beachtet werden, wenn die dfs von Modellen mit mehreren Messzeitpunkten geschätzt werden?
+
+Immer auch residualkorrelationen mit einberechen. Zudem nicht vergessen, die korrelationen zwischen Variablen mit ins Modell zu nehmen.
+
+
+### REHEARSE: Erstellen eines REINEN Messmodells > Was gehört im Rahmen der Rerstriktion bereits in die Definition eines Messmodells?
+
+```{r}
+View(data)
+
+model5x.1 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+"
+
+```
+
+
+### REHEARSE: Modelling the structural part of the measurement model: what has to be included additionally?
+
+It is important not not forget to include the modelling of the covariances of latent constructs. 
+When estimating the model with cfa(), this may be done automatically, but sem() does not include this 
+as part of the model definition.
+
+```{r}
+model5x.2 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# stabilities 
+call2 ~ call1
+call3 ~ call2
+copi2 ~ copi1
+copi3 ~ copi2
+
+# cl effects 
+call2 ~ copi1 
+copi2 ~ call1
+call3 ~ copi2
+copi3 ~ call2
+"
+```
+
+### estimating and evaluating models accoring to the two step strategy:
+
+```{r}
+# because we only creating a measurement model, we are using cfa
+fit5.1 <- cfa(model = model5x.1, data = data, missing = "ML") 
+# because we additionally model the structural part, we use sem
+fit5.2 <- sem(model = model5x.2, data = data, missing = "ML")
+```
+
+And also comparing the fit of the two models:
+```{r}
+
+summary(compareFit(fit5.1, fit5.2))
+lavaan::fitmeasures(fit5.2, "rmsea", h1.model = fit5.1)
+```
+aic und bic sind grösser, chisq sign, aber wir sehen kein bedeutsame (über 0.01)
+Differenz eim cfi. 
+Der rmsead ist aber weit grösser als 0.08. Ich richte mich an diesen Cutoff 
+und würde folglich das Modell ablehnen.
+
+
+
+
+# Multigruppenanalyse 
+
+## VL 
+
+### welche constraints können mit group.equal gesetzt werden?
+
+- intercepts: the intercepts of the observed variables
+- means: the intercepts/means of the latent variables
+- residuals: the residual variances of the observed variables
+- residual.covariances: the residual covariances of the observed variables
+- lv.variances: the (residual) variances of the latent variables
+- lv.covariances: the (residual) covariances of the latent variables
+- regressions: all regression coefficients in the model
+
+### Was waren die vier Möglichkeiten, um group constraints einzuführen, die in der VL besprochen wurden?
+
+## Exercises
+
+```{r}
+rm(list = ls())
+```
+
+```{r}
+data <- readxl::read_xlsx("./data/dallarosa.xlsx")
+```
+
+### Creating cross lagged models with stabilites accross measurement tps
+
+```{r}
+
+model6x.1 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ f*copi1 
+call3 ~ f*copi2
+copi2 ~ g*call1
+copi3 ~ g*call2
+
+# stabilities
+call2 ~ h*call1
+call3 ~ h*call2
+copi2 ~ i*copi1
+copi3 ~ i*copi2
+"
+
+```
+
+### Für Frauen und Männer getrennte Schätzung abgeben, aber gleichsetzung über Messzeitpunkte beibehalten.
+
+```{r}
+model6x.2 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ c(f1,f2)*copi1 
+call3 ~ c(f1,f2)*copi2
+copi2 ~ c(g1,g2)*call1
+copi3 ~ c(g1,g2)*call2
+
+# stabilities 
+call2 ~ c(h1,h2)*call1
+call3 ~ c(h1,h2)*call2
+copi2 ~ c(i1,i2)*copi1
+copi3 ~ c(i1,i2)*copi2
+"
+
+```
+
+
+### Creating a model where the cross lagged effects as well as the stabilites are equal accross groups:
+
+In effect we have multiple different possibilities for solving this problem.
+
+#### With simply specifying the parameters as equal and fitting the model:
+```{r}
+model6x.3.1 <- "
+# factor loadings and indicators
+call1 =~ call1a + call1b + call1c
+call2 =~ call2a + call2b + call2c
+call3 =~ call3a + call3b + call3c
+
+copi1 =~ copi1a + copi1b + copi1c + copi1d
+copi2 =~ copi2a + copi2b + copi2c + copi2d
+copi3 =~ copi3a + copi3b + copi3c + copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ f*copi1 
+call3 ~ f*copi2
+copi2 ~ g*call1
+copi3 ~ g*call2
+
+# stabilities 
+call2 ~ h*call1
+call3 ~ h*call2
+copi2 ~ i*copi1
+copi3 ~ i*copi2
+"
+```
+
+#### With the group equal argument: 
+
+```{r}
+model6x.3.2 <- "
+# factor loadings and indicators
+call1 =~ call1a + call1b + call1c
+call2 =~ call2a + call2b + call2c
+call3 =~ call3a + call3b + call3c
+ 
+copi1 =~ copi1a + copi1b + copi1c + copi1d
+copi2 =~ copi2a + copi2b + copi2c + copi2d
+copi3 =~ copi3a + copi3b + copi3c + copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+
+# < NOW WITHOUT ANY LABELS>
+
+# cl effects 
+call2 ~ copi1 
+call3 ~ copi2
+copi2 ~ call1
+copi3 ~ call2
+
+# stabilies 
+call2 ~ call1
+call3 ~ call2
+copi2 ~ copi1
+copi3 ~ copi2
+"
+```
+
+#### With the usage of explicit specifiers
+
+```{r}
+model6x.3.3 <- "
+# factor loadings and indicators
+call1 =~ call1a + call1b + call1c
+call2 =~ call2a + call2b + call2c
+call3 =~ call3a + call3b + call3c
+
+copi1 =~ copi1a + copi1b + copi1c + copi1d
+copi2 =~ copi2a + copi2b + copi2c + copi2d
+copi3 =~ copi3a + copi3b + copi3c + copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ c(f1,f2)*copi1 
+call3 ~ c(f1,f2)*copi2
+copi2 ~ c(g1,g2)*call1
+copi3 ~ c(g1,g2)*call2
+
+# stabilities 
+call2 ~ c(h1,h2)*call1
+call3 ~ c(h1,h2)*call2
+copi2 ~ c(i1,i2)*copi1
+copi3 ~ c(i1,i2)*copi2
+
+# constraints 
+f1 == f2
+g1 == g2
+h1 == h2
+i1 == i1
+"
+```
+
+Fitting all these different models: 
+
+
+```{r}
+# only setting the group argument:
+fit6x.3.1 <- lavaan::sem(model = model6x.1, data = data, group = "gender", missing = "ML")
+# here, we set explicitly set equality constraints:
+fit6x.3.2 <- lavaan::sem(model = model6x.2, data = data, group = "gender", group.equal = c("regressions"), missing = "ML")
+# here, we only specify group, because equality constraints were set in the model definition:
+fit6x.3.3 <- lavaan::sem(model = model6x.3, data = data, group = "gender", missing = "ML")
+```
+
+```{r}
+summary(fit6x.3.1)
+summary(fit6x.3.2)
+summary(fit6x.3.3)
+```
+
+# Mediation
+
+## Lecture questions
+
+### Wofür können mediationsanalysyen genutzt werden? Warum sind sie nützlich?
+
+Testen von theoretischen kausalen Modellen. Unter in der Psychotherapie Forschung ist die 
+Unterbrechung von Kausalketten von grossem Interesse.
+
+### Warum sind bei Mediationsmodelle Latente Variablen idr. Manifesten variablen zu bevorzugen?
+
+Mediationsanalyse kann theoretisch auch direkt mit manifesten Variablen durchgeführt werden.
+Ein Problem ist dabei, dass bei geringer reliabilität der Indirekte Pfad unterschätzt wird.
+
+### Beschreibe das Vorgehen bei Mediationsanalysen nach Baron und Kenny. Was sind Probleme bei der Vorgehensweise?
+
+1. ist c signifikant? 
+2. ist a signifikant?
+3. ist b signifikant? 
+4. ist ab signifikant?
+Wenn ab signiikant und c' nicht mehr, vollständige mediation
+
+Probleme:
+- Da dreimal getestet wird, kann h0 dreimal beibehalten werden > Wenn eine Mediationshypothese
+in der Theorie wahr ist, muss sie sich nicht dadurch zeigen, dass alle drei Effekte signifkant sind.
+- Signifikanz von c nicht sinnvoll, weil es auch möglich ist, dass ein Mediationseffekt 
+eine signifikante Moderation verdeckt.
+
+
+Weil Messfehler in laten
+
+### Beschreibe den Sobel Test und Probleme mit dem Sobel Test
+
+Der Sobel test schätzt Mediation basierend auf der Formel von Sobel, ohne 
+dass Mediation etc. berücksichtigt wird.
+
+```{r}
+example <- "
+thing_b ~ a*thing_a # indirect a
+thing_c ~ b*thing_b # indirect b 
+thing_c ~ cp*thing_a # c prime
+
+# mediation
+ab := a*b
+total := cp+(a*b)
+"
+```
+
+Ein Problem des Tests ist die Annahme der Normalverteilung, (die für den Test nötig
+wäre) nicht gegeben ist. > Power des Tests wird uU. unterschätzt. Das kann zu falschen
+Schlussfolgerungen führen.
+
+### Beschreibe Bootstrapping als Lösung für das Problem mit dem Sobel Test.
+
+Generelle Idee von Bootstrapping: 
+ Es **müssen** Daten auf Individual/Falleben vorliegen. 
+ Von diesen Daten wird dann widerholt ein Zufallssample (mit zurücklegen gezogen)
+
+### REHEARSE: Wie wird bootstrapping nach Strout und Bolger angewendet für die Berechunung eines Konfidenzintervalls? 
+
+Zuerst müssen wir in Lavaan angeben, dass wir die se's mittels bootstrap schätzen.
+Danach müssen wir uns die cis selber ausgeben lassen:
+
+```{r}
+# fit <- lavaan(data, model, se = "bootstrap", bootstrap = 1000) 
+# lavaan::fitMeasures(fit, level = 0.95, boot.ci.type = "bca.simple", output = "text", header = TRUE)
+```
+
+### REHEARSE: Wie sollten Mediationseffekte interpretiert werden? Wann kann von vollständiger, wann partieller Mediation gesprochen werden?
+
+Auch wenn c' nichtsignifikant ist, kann in vielen Fällen nicht geschlossen werden, dass vollständige Mediation besteht ▪ Effektstärke von c' beachten ▪ Nur wenn c' sehr klein ist (und viel kleiner als der indirekte Effekt a × b), ist ein Schluss auf vollständige Mediation sinnvoll
+
+Effektstärken des Indirekten Effektes können auch als Effekt im Verhältnis zum direkten Effekt ausgedrückt werden. 
+Aber nur sinnvoll, wenn beide Effekte das gleiche Vorzeichen haben.
+
+## Exercises
+
+```{r}
+rm(list = ls())
+```
+
+
+```{r}
+data <- read_xlsx("./data/dallarosa.xlsx")
+```
+
+### Create a mediation analysis with data from t1
+
+```{r}
+
+model7x.1 <- "
+call1 =~ call1a + call1b + call1c
+copi1 =~ copi1a + copi1b + copi1c + copi1d
+enle1 =~ enle1a + enle1b + enle1c
+
+call1 ~ cp*copi1
+enle1 ~ a*copi1
+call1 ~ b*enle1
+
+# define params
+ab := a*b
+total := cp+(a*b)
+"
+
+fit7x.1 <- lavaan::sem(model = model7x.1, data = data, missing = "ML" )
+summary(fit7x.1, standardized = TRUE, fit.measures = TRUE)
+
+
+```
+
+Nach sobel wäre das ein signifikantes ergebnis. Aber wir wissen, dass der 
+Signifikanz Test verzerrt ist (bzw. zu schnell ein negatives Ergebnis angibt).
+dh. schätzen wir das Modell erneut, jetzt aber mit bootstrap:
+
+```{r}
+fit7x.2 <- lavaan::sem(model = model7x.1, data = data, se = "bootstrap", bootstrap = 1000) 
+
+lavaan::parameterEstimates(fit7x.2, ci = 0.95 , boot.ci.type = "bca.simple", standardized = TRUE, output = "text" )
+```
+
+
+# 
+
+```{r}
+#| label: results
+# Add tables and figures summarising the main findings here.
+```
+
+# Cross Lagged Panel model
+
+### Was ist nötig um Kausalität zu erschliessen?
+
+Entweder randomisierung, oder, wenn Randomisierung nicht möglich,
+- Ein Effekt von x auf y (muss vorhanden sein, oft aber nur theoretisch angenommen)
+- x muss y zeitlich vorausgehen
+- Effekt sollte bei Modellierung bestehen bleiben, auch wenn relevante drittvariablen Kontrolliert werden.
+  - dh. Kontrolle stabilier und konfundierter Drittvariablen
+  - können uU. auch nicht linear sein.
+- KONTROLLE DES AUTOREGRESSORS
+
+### Warum ist die Kontrolle des Autoregressors relevant?
+
+Wenn Konstrukte y und x bereits zu t1 hoch korrleieren kommt Effekt von y1 auf x2 
+nicht aufgrund von kausalem effekt, sondern aufgrund von zsh von y1 und x1 zustande.
+
+
+Interpret the results, discuss limitations, and relate the findings to
+existing literature.
+
+### Was ist der Unterschied zwischen RI-CLP modellen und DP Modellen?  
+
+Ri-clp Modelle sind sparsamer (wenn Modelle genestet im Falle von Gleichsetzung.)
+
+unit effects im dlp versuchen Effekte stabiler drittvariablen heraus zu partialisieren.
+sogenannte unobserved time invariant confounders.
+
+Gleich ist, dass beide Modelle versuchen, stabile- zwischen Personen Varianz heerauszu
+partialisieren.
+
+ri-clpm ist dem dlm vorzuziehen, wenn annahmen (stationarität und equilibrium) gerechtfertigt sind
+Das ist nicht der Fall bei: Kinder/Jugendlichen sowie Grossen Lebensereignissen über 
+die Untersduchungsperiode hinweg.
+
+## Exercises
+
+### Interpretieren der Effekte in einem cross lagegd panel model
+
+Wichtig ist es, die standardisierten Werte zu vergleichen. 
+
+```{r}
+model9x.1 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ f*copi1 
+call3 ~ f*copi2
+copi2 ~ g*call1
+copi3 ~ g*call2
+
+# stabilities
+call2 ~ h*call1
+call3 ~ h*call2
+copi2 ~ i*copi1
+copi3 ~ i*copi2
+"
+
+fit9x.1 <- lavaan::sem(model = model9x.1, data = data, missing = "ML")
+summary(fit9x.1)
+
+```
+Von Orth et al. (2024)
+Based on the present findings, we propose the following guide-
+lines for interpreting the size of cross-lagged effects. We suggest
+that .03 indicates a small effect, .07 a medium effect, and .12 a large
+effect.
+
+
+### Modifikation eines CLP zu einem DPM modell
+
+Code von Oben nehmen. 
+Wir brauchen die Unit effects sowie die covariances der Unit effects.
+
+```{r}
+
+model9x.2 <- "
+# factor loadings and indicators
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# covariances
+call1 ~~ copi1
+call2 ~~ copi2
+call3 ~~ copi3
+
+# structural part of measurement model
+# cl effects 
+call2 ~ f*copi1 
+call3 ~ f*copi2
+copi2 ~ g*call1
+copi3 ~ g*call2
+
+# stabilities
+call2 ~ h*call1
+call3 ~ h*call2
+copi2 ~ i*copi1
+copi3 ~ i*copi2
+
+# unit effects
+call =~ 1*call2 + 1*call3
+copi =~ 1*copi2 + 1*copi3
+
+# covariances of unit effects
+
+call ~~ copi
+call ~~ call1
+call ~~ copi1
+copi ~~ copi1
+copi ~~ call1
+"
+
+fit9x.2 <- lavaan::sem(model = model9x.2, data = data, missing = "ML")
+
+```
+
+### REHEARSE: Erstellen eines RI-CLP basierend auf einem standard clpm
+
+```{r}
+
+model9x.3 <- "
+# measureemtn model (seperate from structural part)
+call1 =~ call1a + a*call1b + b*call1c
+call2 =~ call2a + a*call2b + b*call2c
+call3 =~ call3a + a*call3b + b*call3c
+
+copi1 =~ copi1a + c*copi1b + d*copi1c + e*copi1d
+copi2 =~ copi2a + c*copi2b + d*copi2c + e*copi2d
+copi3 =~ copi3a + c*copi3b + d*copi3c + e*copi3d
+
+# residual correlations
+call1a ~~ call2a + call3a
+call2a ~~ call3a
+call1b ~~ call2b + call3b
+call2b ~~ call3b
+call1c ~~ call2c + call3c
+call2c ~~ call3c
+
+copi1a ~~ copi2a + copi3a
+copi2a ~~ copi3a 
+copi1b ~~ copi2b + copi3b
+copi2b ~~ copi3b 
+copi1c ~~ copi2c + copi3c
+copi2c ~~ copi3c 
+copi1d ~~ copi2d + copi3d
+copi2d ~~ copi3d 
+
+# random intercepts
+ca =~ 1*call1 + 1*call2 + 1*call3
+co =~ 1*copi1 + 1*copi2+ 1*copi3
+
+# residuals
+calr1 =~ 1*call1
+calr2 =~ 1*call2
+calr3 =~ 1*call3
+
+copir1 =~ 1*copi1
+copir2 =~ 1*copi2
+copir3 =~ 1*copi3
+
+# set variances of construct factors to 0 
+
+call1 ~~ 0*call1
+call2 ~~ 0*call2
+call3 ~~ 0*call3
+
+copi1 ~~ 0*copi1
+copi2 ~~ 0*copi2
+copi3 ~~ 0*copi3
+
+# cross lagged effects 
+calr2 ~ f*copir1
+calr3 ~ f*copir2
+
+copir2 ~ g*calr1 
+copir3 ~ g*calr2 
+
+# stabilities 
+calr2 ~ h*calr1
+calr3 ~ h*calr2
+
+copir2 ~ i*copir1 
+copir3 ~ i*copir2
+
+# covariances
+calr1 ~~ copir1
+calr2 ~~ copir2
+calr3 ~~ copir3
+
+# correlations of random effects
+ca ~~ co
+ca ~~ 0*calr1
+ca ~~ 0*copir1
+co ~~ 0*copir1
+co ~~ 0*calr1
+"
+
+fit9x.3 <- lavaan::sem(model = model9x.3, data = data, missing = "ML")
+```
+
+
+### REHEASE: compare the three models
+
+```{r}
+summary(compareFit(fit9x.1, fit9x.2, fit9x.3))
+fitmeasures(fit9x.1, "rmsea", h1.model= fit9x.2)
+fitmeasures(fit9x.3, "rmsea", h1.model= fit9x.2)
+fitmeasures(fit9x.1, "rmsea", h1.model= fit9x.3)
+```
+WICHTIG: das modell mit den meisten dfs (das restriktivste/ strengste) ist hier das traditionelle clpm, danach ds ri-clp und dann das dpm.
+ri-clpm hat mehr dfs, weil keine korrelationen mit ris und residuals der ersten Messwelle zugelassen werden.
+
+
+
+# Wachstumskurven Modelle
+
+## Theorie Fragen
+
+### Warum ist es im Rahmen eines bivariaten Wachstumskurven Modelles sinnvoll, residum der Manifesten Varaiblen korrelieren zu lassen? Wie sollten die Korrelation modelliert werden?
+
+Es ist sinnvoll Die Residuen von Variablen korrelieren zu lassen, die zum gleichen Zeitpunkt gemessen wurden. 
+Ziel ist es Messwellen Effekte zu Kontrollieren: Das Wetter könnte bspw. eine Einfluss auf die Antworten gehabt haben, 
+der zu einem bestimmten Zeitpunkt in beiden Variablen gleich ist.
+
+### Was ist der Unterschied zwischen Modellen mit Time Varying covariates und cross lagged panel modellen?
+
+### Warum sollte eine Time Varying Covariate zentriert werden?
+
+Weil so die Effekte der Wachstumsfaktoren besser interpretiert werden können: Der 
+Mittelwert der Wachstumsfaktoren entspricht nun dem Mittelwert einer Person mit 
+durchschnittlichen Werten auf den Time Varying Covariates.
+
+### Was ist der Grund für den Einbezug von TVCs in ein growth curve modell?
+
+Es kann getestet werden, ob ein Konstrukt Varianz in einem anderen Konstrukt erklärt (zu verschiednene Zeitpunkten), 
+die über die Erklärte Varianz durch den Wachstumsverlauf des Konstruktes hinaus geht.
+
+
+## Exercises 
+
+### reines Wachstumskurven Modell definieren und fitten sowie die Resultate interpretieren 
+
+```{r}
+data <- read_xlsx("./data/dallarosa.xlsx")
+```
+
+```{r}
+model10x.1 <- "
+i.call =~ 1*call1m + 1*call2m + 1*call3m 
+se.call =~ 0*call1m + 1*call2m + 2*call3m 
+"
+fit10x.1 <- lavaan::growth(model = model10x.1, data = data, missing = "ML")
+summary(fit10x.1, standardized = TRUE)
+
+```
+
+### Selbes Modell fitten mit gender als Kovariate 
+
+```{r}
+model10x.2 <- "
+i.call =~ 1*call1m + 1*call2m + 1*call3m 
+se.call =~ 0*call1m + 1*call2m + 2*call3m 
+
+i.call ~ gender 
+se.call ~ gender 
+"
+fit10x.1 <- growth(model10x.2, data = data, missing = "ML")
+summary(fit10x.1)
+```
+
+Slope und Varianz sind generell höher, wenn das gender == weiblich ist.
+
+### Nun ein bivariates Wachstumskurven Modell fitten:
+
+```{r}
+model10x.2 <- "
+# latent growth variables
+i.call =~ 1*call1m + 1*call2m + 1*call3m 
+se.call =~ 0*call1m + 1*call2m + 2*call3m 
+
+i.copi =~ 1*copi1m + 1*copi2m + 1*copi3m
+se.copi =~ 0*copi1m + 1*copi2m + 2*copi3m
+
+# correlated residuals 
+copi1m ~~ call1m
+copi2m ~~ call2m 
+copi3m ~~ call3m
+"
+
+fit10x.2 <- growth(model = model10x.2, data = data, missing = "ML")
+summary(fit10x.2)
+```
+### Erstellen Sie ein latent growth model mit time varying covariates.
+
+```{r}
+# zentrieren der Werte: 
+data <- data %>% mutate(
+ enle1_z = enle1a - enle1m,
+ enle2_z = enle2a - enle2m,
+ enle3_z = enle3a - enle3m,
+  )
+# dann modell aufstellen: 
+model10x.3 <- "
+i.copi =~ 1*copi1m + 1*copi2m + 1*copi3m
+se.copi =~ 0*copi1m + 1*copi2m + 2*copi3m
+
+copi1m ~ enle1_z
+copi2m ~ enle2_z
+copi3m ~ enle3_z
+"
+
+fit10x.3 <- lavaan::growth(model = model10x.3, data = data, missing = "ML")
+summary(fit10x.3)
+```
+
+# Messinvarianz Modelle
+
+## Theoretische Fragen: 
+
+### Wo kann Messinvarianz festgestellt werden?
+
+Über verschiedene Testversionen, Gruppen, Zeitpunkte hinweg.
+
+### Welche Arten von Messinvarianz gibt es?
+
