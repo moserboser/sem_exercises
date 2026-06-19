@@ -41,9 +41,9 @@ sessionInfo()
 # Libraries und Dependencies
 
 ```{r}
-library(tidyverse)
-library(lavaan)
 library(semTools)
+library(lavaan)
+library(tidyverse)
 library(readr)
 library(readxl)
 ```
@@ -1532,10 +1532,21 @@ fit10x.3 <- lavaan::growth(model = model10x.3, data = data, missing = "ML")
 summary(fit10x.3)
 ```
 
+### Wachstumskurven Modelle über gender hinweg
+
+```{r}
+
+```
+
+
 # Messinvarianz Modelle
 
 
 ## Theoretische Fragen: 
+
+### Sollten model Constraints die zur Testung von Messinvarianz gesetzt wurden beibehalten werden (wenn Invarianz für dieses Niveau hält)? 
+
+Ja: Falls das erforderliche Niveau der Messinvarianz gegeben ist, die entsprechenden Constraints bei den weiteren Analysen verwenden.
 
 ### Wo kann Messinvarianz festgestellt werden?
 
@@ -1836,7 +1847,7 @@ fit11x.4 <- lavaan(model11x.4, data = data, missing = "ML")
 ### Vergleiche die drei Modelle 
 
 ```{r}
-summary(compareFit(fit11x.1, fit11x.2, fit11x.3), o)
+summary(compareFit(fit11x.1, fit11x.2, fit11x.3))
 ```
 
 
@@ -1900,7 +1911,84 @@ call1 ~~ call3
 call2 ~~ call3
 "
 
-fit.
+fit11x.2.var <- lavaan::lavaan(model11x.2.var)
+
+summary(compareFit(fit11x.2, fit11x.2.var))
+
+```
+
+### Messinvarianz Modell für unterschiedliche Levels von gender aber nur querschnittlich (für call1). Wie können wir die constraints setzen?
+
+Wir können constraints über den group equal parameter setzen oder über constraints in der Modelldefnition.
+
+```{r}
+# here we are setting constraints in the model definition
+
+model11x.1 <- "
+# measurement model:
+call1 =~ c(a1, a2)*call1a + c(b1, b2)*call1b + c(c1,c2)*call1c
+
+# intercepts of indicators:
+call1a ~ c(d1,d2)*1
+call2b ~ c(e1,e2)*1
+call3c ~ c(f1,f2)*1
+
+# residual variances
+call1a ~~ call1a 
+call2a ~~ call2a 
+call3a ~~ call3a 
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ c(g1,g2)*1
+# variances
+call1 ~~ c(h1,h2)*call1
+
+# constraints 
+a1 == a1 # für gleiche means 
+d1 == d2 # für gleiches Ausgangsniveau
+g1 == 0 
+h1 == 1
+"
+
+```
+
+### modify the model above, such that you have strong and strict invariance (two models)
+
+```{r}
+model11x.1 <- "
+# measurement model:
+call1 =~ c(a1, a2)*call1a + c(b1, b2)*call1b + c(c1,c2)*call1c
+
+# intercepts of indicators:
+call1a ~ c(d1,d2)*1
+call2b ~ c(e1,e2)*1
+call3c ~ c(f1,f2)*1
+
+# residual variances
+call1a ~~ c(i1,i2)*call1a 
+call2a ~~ c(j1,j2)*call2a 
+call3a ~~ c(k1,k2)*call3a 
+
+# constraints, means and variances for latent vars: 
+# means 
+call1 ~ c(g1,g2)*1
+# variances
+call1 ~~ c(h1,h2)*call1
+
+# constraints 
+a1 == a1 # für gleiche means 
+d1 == d2 # für gleiches Ausgangsniveau
+g1 == 0 
+h1 == 1
+b1 == b2 # <- now adding the following
+c1 == c2 # > for loadings (weak)
+d1 == d2 
+e1 == e2 # > for intercepts (strong)
+i1 == i2 
+j1 == j2 
+k1 == k2 # > for residuals (strong)
+"
 
 ```
 
