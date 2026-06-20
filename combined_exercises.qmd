@@ -51,7 +51,7 @@ library(readxl)
 
 # Einführung
 
-## Wissensfragen: 
+## Theoretische Übungen
 
 ### Was sind dtrukturelle Gleichungsmodelle?
 
@@ -147,8 +147,8 @@ die durch Messmodelle beschrieben werden.
 - Unzulässige Kausalinterpretation gerichteter Pfade: häufige – jedoch falsche – Annahme, die Kausalität gerichteter Pfade werde generell durch Strukturgleichungsmodelle bestätigt 
 
 ```{r}
-# everything is regressions 
-syntax <- 
+# everything is regressions
+syntax <- ""
 ```
 
 ### Wie können wir im Rahmen von SEM komplexitätsreduzierende Massnahmen vornehmen?
@@ -204,7 +204,7 @@ call2c ~~ call3c
 "
 
 fit1 <- lavaan::cfa( model1, data =  data)
-lavaan::parameterestimates(fit1)
+lavaan::parameterEstimates(fit1)
 lavaan::summary(fit1, standardized = TRUE)
 ```
 
@@ -234,13 +234,15 @@ enle1c ~~ enle3c
 enle2c ~~ enle3c
 "
 
-fit2 <- lavaan::sem(mode = model2, data = data, missing = "ML")
+fit2 <- lavaan::sem(model = model2, data = data, missing = "ML")
 lavaan::summary(fit2, standardized = T)
 
 ```
 
 
 # Missing data
+
+## Theoretische Übungen
 
 ### Welche unterschiedlichen Arten von Missing Data kennen wir? Gib jeweils ein Beispiel
 
@@ -291,6 +293,8 @@ Bei FIML deletion ist zudem (egal welche Variablen aus dem Datensatz gebraucht w
 Datensatz immer der selbe. Bei listwise deletion werden je nach Datensatz (und Variablen die wir analysiseren) unterschiedlich viele Variablen aus dem Datensatz gelöscht.
 
 # Modellevalation
+
+## Theoretische Übungen
 
 ### Was ist ein Problem bei der Verwendung des Chisquared tests zur Modellevaluation?
 
@@ -359,6 +363,11 @@ Nice ist: Es kann ein Konfidenzintervall Berechnet werden.
 
 ## Exercises
 
+```{r}
+rm(list = ls())
+data <- readxl::read_xlsx("./data/dallarosa.xlsx")
+```
+
 ### Finde den Fehler im folgenden Modell:
 
 ```{r}
@@ -407,7 +416,7 @@ model4x.1 <- '
 
 ```{r}
 fit4x.1 <- lavaan::sem(model = model4x.1, data = data, missing = "ml")
-summary(fit4x.1, fit.measures = T)o
+summary(fit4x.1, fit.measures = T)
 
 
 ```
@@ -533,11 +542,13 @@ lavaan::fitmeasures(fit4x.3, "rmsea", h1.model = fit4x.2)
 
 
 ```{r}
-summary(fit4x.3, standardized = T, fit.measure = T)
-<!-- ``` -->
+summary(fit4x.3, standardized = T, fit.measures = T)
+```
 
 
 # Messmodell
+
+## Theoretische Übungen
 
 ### Was sollte in Messmodellen sichergestellt werden?
 
@@ -599,10 +610,10 @@ Test des Gesamtmodells ohne kausale Pfade zwischen den Konstrukten, aber mit sä
 
 # Messmodelle
 
-## Lecture stuff
+## Theoretische Übungen
 tbd.
 
-## Exercises 
+## Exercises
 
 ```{r}
 rm(list = ls())
@@ -617,7 +628,7 @@ Immer auch residualkorrelationen mit einberechen. Zudem nicht vergessen, die kor
 ### REHEARSE: Erstellen eines REINEN Messmodells > Was gehört im Rahmen der Rerstriktion bereits in die Definition eines Messmodells?
 
 ```{r}
-View(data)
+# View(data)
 
 model5x.1 <- "
 # factor loadings and indicators
@@ -729,7 +740,7 @@ und würde folglich das Modell ablehnen.
 
 # Multigruppenanalyse 
 
-## VL 
+## Theoretische Übungen
 
 ### welche constraints können mit group.equal gesetzt werden?
 
@@ -1028,7 +1039,7 @@ fit6x.3.1 <- lavaan::sem(model = model6x.1, data = data, group = "gender", missi
 # here, we set explicitly set equality constraints:
 fit6x.3.2 <- lavaan::sem(model = model6x.2, data = data, group = "gender", group.equal = c("regressions"), missing = "ML")
 # here, we only specify group, because equality constraints were set in the model definition:
-fit6x.3.3 <- lavaan::sem(model = model6x.3, data = data, group = "gender", missing = "ML")
+fit6x.3.3 <- lavaan::sem(model = model6x.3.3, data = data, group = "gender", missing = "ML")
 ```
 
 ```{r}
@@ -1039,7 +1050,7 @@ summary(fit6x.3.3)
 
 # Mediation
 
-## Lecture questions
+## Theoretische Übungen
 
 ### Wofür können mediationsanalysyen genutzt werden? Warum sind sie nützlich?
 
@@ -1158,14 +1169,9 @@ lavaan::parameterEstimates(fit7x.2, ci = 0.95 , boot.ci.type = "bca.simple", sta
 ```
 
 
-# 
-
-```{r}
-#| label: results
-# Add tables and figures summarising the main findings here.
-```
-
 # Cross Lagged Panel model
+
+## Theoretische Übungen
 
 ### Was ist nötig um Kausalität zu erschliessen?
 
@@ -1429,11 +1435,198 @@ fitmeasures(fit9x.1, "rmsea", h1.model= fit9x.3)
 WICHTIG: das modell mit den meisten dfs (das restriktivste/ strengste) ist hier das traditionelle clpm, danach ds ri-clp und dann das dpm.
 ri-clpm hat mehr dfs, weil keine korrelationen mit ris und residuals der ersten Messwelle zugelassen werden.
 
+### Aufstellen eines cross lagged panel models basierend auf einem Ausgangsmodell
+
+```{r}
+data_yp <- read_xlsx("./data/YP.xlsx")
+```
+
+Das Ausgangsmodell:
+```{r}
+model8.3 <- '
+  # measurement model
+    se1 =~ rse1a + a*rse1b + b*rse1c
+    se2 =~ rse2a + a*rse2b + b*rse2c
+    se3 =~ rse3a + a*rse3b + b*rse3c
+    se4 =~ rse4a + a*rse4b + b*rse4c
+    de1 =~ dep1a + c*dep1b + d*dep1c
+    de2 =~ dep2a + c*dep2b + d*dep2c
+    de3 =~ dep3a + c*dep3b + d*dep3c
+    de4 =~ dep4a + c*dep4b + d*dep4c
+  # correlated residuals
+    rse1a ~~ rse2a + rse3a + rse4a
+    rse2a ~~ rse3a + rse4a
+    rse3a ~~ rse4a
+    rse1b ~~ rse2b + rse3b + rse4b
+    rse2b ~~ rse3b + rse4b
+    rse3b ~~ rse4b
+    rse1c ~~ rse2c + rse3c + rse4c
+    rse2c ~~ rse3c + rse4c
+    rse3c ~~ rse4c
+    dep1a ~~ dep2a + dep3a + dep4a
+    dep2a ~~ dep3a + dep4a
+    dep3a ~~ dep4a
+    dep1b ~~ dep2b + dep3b + dep4b
+    dep2b ~~ dep3b + dep4b
+    dep3b ~~ dep4b
+    dep1c ~~ dep2c + dep3c + dep4c
+    dep2c ~~ dep3c + dep4c
+    dep3c ~~ dep4c
+  # stability effects
+    se2 ~ e*se1
+    se3 ~ e*se2
+    se4 ~ e*se3
+    de2 ~ f*de1
+    de3 ~ f*de2
+    de4 ~ f*de3
+  # cross-lagged effects
+    se2 ~ g*de1
+    se3 ~ g*de2
+    se4 ~ g*de3
+    de2 ~ h*se1
+    de3 ~ h*se2
+    de4 ~ h*se3
+  # covariances
+    se1 ~~ de1
+    se2 ~~ de2
+    se3 ~~ de3
+    se4 ~~ de4
+'
+```
+
+
+### Erstellen eines DPM
+ 
+```{r}
+model8.4 <- '
+  # measurement model
+    se1 =~ rse1a + a*rse1b + b*rse1c
+    se2 =~ rse2a + a*rse2b + b*rse2c
+    se3 =~ rse3a + a*rse3b + b*rse3c
+    se4 =~ rse4a + a*rse4b + b*rse4c
+    de1 =~ dep1a + c*dep1b + d*dep1c
+    de2 =~ dep2a + c*dep2b + d*dep2c
+    de3 =~ dep3a + c*dep3b + d*dep3c
+    de4 =~ dep4a + c*dep4b + d*dep4c
+  # correlated residuals
+    rse1a ~~ rse2a + rse3a + rse4a
+    rse2a ~~ rse3a + rse4a
+    rse3a ~~ rse4a
+    rse1b ~~ rse2b + rse3b + rse4b
+    rse2b ~~ rse3b + rse4b
+    rse3b ~~ rse4b
+    rse1c ~~ rse2c + rse3c + rse4c
+    rse2c ~~ rse3c + rse4c
+    rse3c ~~ rse4c
+    dep1a ~~ dep2a + dep3a + dep4a
+    dep2a ~~ dep3a + dep4a
+    dep3a ~~ dep4a
+    dep1b ~~ dep2b + dep3b + dep4b
+    dep2b ~~ dep3b + dep4b
+    dep3b ~~ dep4b
+    dep1c ~~ dep2c + dep3c + dep4c
+    dep2c ~~ dep3c + dep4c
+    dep3c ~~ dep4c
+  # stability effects
+    se2 ~ e*se1
+    se3 ~ e*se2
+    se4 ~ e*se3
+    de2 ~ f*de1
+    de3 ~ f*de2
+    de4 ~ f*de3
+  # cross-lagged effects
+    se2 ~ g*de1
+    se3 ~ g*de2
+    se4 ~ g*de3
+    de2 ~ h*se1
+    de3 ~ h*se2
+    de4 ~ h*se3
+  # covariances
+    se1 ~~ de1
+    se2 ~~ de2
+    se3 ~~ de3
+    se4 ~~ de4
+  # unit effects 
+    u.se =~  1*se2 + 1*se3 + 1*se4
+    u.de =~  1*de2 + 1*de3 + 1*de4
+    
+  # unit of variance effects
+  u.se ~~ se1 
+  u.se ~~ de2 
+  u.de ~~ se1
+  u.de ~~ de1
+  u.se ~~ u.de 
+'
+```
+
+and now the ri-clpm
+
+```{r}
+model8.5 <- '
+  # measurement model
+    se1 =~ rse1a + a*rse1b + b*rse1c
+    se2 =~ rse2a + a*rse2b + b*rse2c
+    se3 =~ rse3a + a*rse3b + b*rse3c
+    se4 =~ rse4a + a*rse4b + b*rse4c
+    de1 =~ dep1a + c*dep1b + d*dep1c
+    de2 =~ dep2a + c*dep2b + d*dep2c
+    de3 =~ dep3a + c*dep3b + d*dep3c
+    de4 =~ dep4a + c*dep4b + d*dep4c
+  # correlated residuals
+    rse1a ~~ rse2a + rse3a + rse4a
+    rse2a ~~ rse3a + rse4a
+    rse3a ~~ rse4a
+    rse1b ~~ rse2b + rse3b + rse4b
+    rse2b ~~ rse3b + rse4b
+    rse3b ~~ rse4b
+    rse1c ~~ rse2c + rse3c + rse4c
+    rse2c ~~ rse3c + rse4c
+    rse3c ~~ rse4c
+    dep1a ~~ dep2a + dep3a + dep4a
+    dep2a ~~ dep3a + dep4a
+    dep3a ~~ dep4a
+    dep1b ~~ dep2b + dep3b + dep4b
+    dep2b ~~ dep3b + dep4b
+    dep3b ~~ dep4b
+    dep1c ~~ dep2c + dep3c + dep4c
+    dep2c ~~ dep3c + dep4c
+    dep3c ~~ dep4c
+  # stability effects
+    se2 ~ e*se1
+    se3 ~ e*se2
+    se4 ~ e*se3
+    de2 ~ f*de1
+    de3 ~ f*de2
+    de4 ~ f*de3
+  # cross-lagged effects
+    se2 ~ g*de1
+    se3 ~ g*de2
+    se4 ~ g*de3
+    de2 ~ h*se1
+    de3 ~ h*se2
+    de4 ~ h*se3
+  # covariances
+    se1 ~~ de1
+    se2 ~~ de2
+    se3 ~~ de3
+    se4 ~~ de4
+  # unit effects 
+    u.se =~  1*se2 + 1*se3 + 1*se4
+    u.de =~  1*de2 + 1*de3 + 1*de4
+    
+  # unit of variance effects
+  u.se ~~ se1 
+  u.se ~~ de2 
+  u.de ~~ se1
+  u.de ~~ de1
+  u.se ~~ u.de 
+'
+```
 
 
 # Wachstumskurven Modelle
 
-## Theorie Fragen
+## Theoretische Übungen
 
 ### Warum ist es im Rahmen eines bivariaten Wachstumskurven Modelles sinnvoll, residum der Manifesten Varaiblen korrelieren zu lassen? Wie sollten die Korrelation modelliert werden?
 
@@ -1455,12 +1648,14 @@ Es kann getestet werden, ob ein Konstrukt Varianz in einem anderen Konstrukt erk
 die über die Erklärte Varianz durch den Wachstumsverlauf des Konstruktes hinaus geht.
 
 
-## Exercises 
+## Exercises
 
 ### reines Wachstumskurven Modell definieren und fitten sowie die Resultate interpretieren 
 
 ```{r}
+rm(list = ls())
 data <- read_xlsx("./data/dallarosa.xlsx")
+data_yp <- read_xlsx("./data/YP.xlsx")
 ```
 
 ```{r}
@@ -1516,7 +1711,7 @@ summary(fit10x.2)
 data <- data %>% mutate(
  enle1_z = enle1a - enle1m,
  enle2_z = enle2a - enle2m,
- enle3_z = enle3a - enle3m,
+ enle3_z = enle3a - enle3m
   )
 # dann modell aufstellen: 
 model10x.3 <- "
@@ -1532,17 +1727,30 @@ fit10x.3 <- lavaan::growth(model = model10x.3, data = data, missing = "ML")
 summary(fit10x.3)
 ```
 
-### Wachstumskurven Modelle über gender hinweg
+### Wachstumskurven Modelle über gender hinweg schätzen: Verwenden sie ein Modell mit freien Parametern und ein Modell mit fixierten Parametern
 
 ```{r}
+model10x.4 <- "
+# measurement model
+rse1 =~ rse1a + rse1b + rse1c + rse1d
+rse2 =~ rse2a + rse2b + rse2c + rse2d
+rse3 =~ rse3a + rse3b + rse3c + rse3d
+rse4 =~ rse4a + rse4b + rse4c + rse4d
 
+# growth model with independant estimates
+s.rse =~ c(a,a)1*rse1 + 1*rse2 + 1*rse3 + 1*rse4
+i.rse =~ 0*rse1 + 1*rse2 + 2*rse3 + 3*rse4
+
+s.rse =~ gender 
+i.rse =~ gender
+"
 ```
 
 
 # Messinvarianz Modelle
 
 
-## Theoretische Fragen: 
+## Theoretische Übungen
 
 ### Sollten model Constraints die zur Testung von Messinvarianz gesetzt wurden beibehalten werden (wenn Invarianz für dieses Niveau hält)? 
 
@@ -1911,7 +2119,7 @@ call1 ~~ call3
 call2 ~~ call3
 "
 
-fit11x.2.var <- lavaan::lavaan(model11x.2.var)
+fit11x.2.var <- lavaan::lavaan(model11x.2.var, data = data, missing = "ML")
 
 summary(compareFit(fit11x.2, fit11x.2.var))
 
@@ -1987,7 +2195,7 @@ d1 == d2
 e1 == e2 # > for intercepts (strong)
 i1 == i2 
 j1 == j2 
-k1 == k2 # > for residuals (strong)
+k1 == k2 # > for residuals (strict)
 "
 
 ```
