@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Your Name">
-<meta name="dcterms.date" content="2026-06-20">
+<meta name="dcterms.date" content="2026-06-21">
 
 <title>title</title>
 <style>
@@ -2285,7 +2285,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 20, 2026</p>
+      <p class="date">June 21, 2026</p>
     </div>
   </div>
   
@@ -2362,23 +2362,37 @@ loaded via a namespace (and not attached):
 <h1 data-number="2"><span class="header-section-number">2</span> Einführung</h1>
 <section id="theoretische-übungen" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="theoretische-übungen"><span class="header-section-number">2.1</span> Theoretische Übungen</h2>
-<section id="was-sind-dtrukturelle-gleichungsmodelle" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="was-sind-dtrukturelle-gleichungsmodelle"><span class="header-section-number">2.1.1</span> Was sind dtrukturelle Gleichungsmodelle?</h3>
+<section id="was-sind-drei-möglichkeiten-um-eine-skala-zu-fixieren-im-rahmen-von-sem-was-sind-die-jeweiligen-tradeoffs" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="was-sind-drei-möglichkeiten-um-eine-skala-zu-fixieren-im-rahmen-von-sem-was-sind-die-jeweiligen-tradeoffs"><span class="header-section-number">2.1.1</span> Was sind drei Möglichkeiten um eine Skala zu Fixieren im Rahmen von SEM? Was sind die jeweiligen Tradeoffs?</h3>
+<ol type="1">
+<li>Mean latent var = 0, sd = 1. Skala wird z standardisiert (jeder Wert entspricht seiner Abweichung vom Mittelwert in Standardabweichungen). Dadurch verlieren wir Infos über die usrprüngliche Metrik der Skala</li>
+<li>Ladung des ersten Indikators auf 0 fixieren &gt; Alle Werte im Verhältnis zu dem ersten Indikator. &gt; Wir verlieren Infos über die Ladung eines einzelnen</li>
+<li>Durchschnittliche Ladung von Indikatoren auf 1, durschnittliche Ladung der Intercepts auf 0 Fixieren &gt; Latenter mean und Latente sd entsprechen nun der Skala der Indikatoren. (Effects coding nach little et al. 2007) - Erfordert mindestens starke invarianz.</li>
+</ol>
+</section>
+<section id="wogegen-wird-der-fit-eines-modelles-mit-inkrementellen-fit-indizes-verglichen-was-schlagen-little-et-al-als-alternative-vor" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="wogegen-wird-der-fit-eines-modelles-mit-inkrementellen-fit-indizes-verglichen-was-schlagen-little-et-al-als-alternative-vor"><span class="header-section-number">2.1.2</span> Wogegen wird der Fit eines Modelles mit inkrementellen Fit-Indizes verglichen? Was schlagen Little et al als Alternative vor?</h3>
+<p>Relative (incremental) fit indices such as the CFI and the NNFI/TLI are computed by comparing the hypothesized model against a null model—a worst-fitting model nested within the hypothesized model. Most software fits this automatically, and by default the null model is the <strong>independence model</strong>, which assumes zero covariance among all indicators while freely estimating their variances. For single-group, single-occasion applications this is a reasonable baseline, because it calibrates how much covariation among indicators a substantively meaningful model can recover.</p>
+<p>For longitudinal (and multiple-group) data, the independence assumption captures only one piece of the appropriate “null” expectation. When the research question concerns whether means and/or variances change across time, the independence model is problematic: a model that equates means or variances across time is not nested within the independence model, so the independence model no longer serves as an adequate (nested) baseline. The authors recommend instead a null model in which <strong>neither the variances nor the means of corresponding indicators change over time</strong>.</p>
+<p>-&gt; Ein solches Null modell müsste basically eigens gefittet werden und dann manuell verglichen werden.</p>
+</section>
+<section id="was-sind-dtrukturelle-gleichungsmodelle" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="was-sind-dtrukturelle-gleichungsmodelle"><span class="header-section-number">2.1.3</span> Was sind dtrukturelle Gleichungsmodelle?</h3>
 <p>Eine vielzahl an Methoden (insbesondere regressionanalytische und faktorenanalytische), die verwendet werden können, um reduktionen in der Komplexität von Daten zu testen. Dabei werden Varianzen, Kovarianzen und Korrelationen andhand von Strukturgleichungen geschätzt.</p>
 <p>Die Modelle gehen in der Regel von einer latenten Struktur aus, die gewisse Einschränkungen bezüglich der beobachteten Varianzen, Kovarianzen und Korrelationen bedingt. Eine Hypothese kann durch den Vergleich zwischen Modellen oder dem Testen einzelner Modelle angeschaut werden. Dabei wird oft ein Schmaler Grad zwischen Induktion und Hypothetischer Deduktion gegangen.</p>
 </section>
-<section id="unterscheide-die-pfadanalyse-von-der-konfirmatorischen-faktorneanalyse.-was-unterscheidet-die-beiden-ansätze" class="level3" data-number="2.1.2">
-<h3 data-number="2.1.2" class="anchored" data-anchor-id="unterscheide-die-pfadanalyse-von-der-konfirmatorischen-faktorneanalyse.-was-unterscheidet-die-beiden-ansätze"><span class="header-section-number">2.1.2</span> Unterscheide die Pfadanalyse von der konfirmatorischen Faktorneanalyse. Was unterscheidet die beiden Ansätze?</h3>
+<section id="unterscheide-die-pfadanalyse-von-der-konfirmatorischen-faktorneanalyse.-was-unterscheidet-die-beiden-ansätze" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="unterscheide-die-pfadanalyse-von-der-konfirmatorischen-faktorneanalyse.-was-unterscheidet-die-beiden-ansätze"><span class="header-section-number">2.1.4</span> Unterscheide die Pfadanalyse von der konfirmatorischen Faktorneanalyse. Was unterscheidet die beiden Ansätze?</h3>
 <ul>
 <li>Im Rahmen der Pfadanalyse werden <strong>nur</strong> manifeste Variablen angeschaut. Dabei wird zwischen endogenen und exogenen Variablen unterschieden auf Exogene Variablen zeigt kein gerichter Pfeil. Auf endogene Variablen zeit ein gerichteter Pfeil.</li>
 <li>Im Rahmen der KFA werden zusätzliche Latente (also rein theoretisch angenommene) Variablen angeschaut. Zusammenhänge sind dabei <em>nie</em> gerichtet, sondern nur korrelativ.</li>
 </ul>
 </section>
-<section id="was-ist-das-ziel-von-lavaan-wofür-wird-das-package-verwendet" class="level3" data-number="2.1.3">
-<h3 data-number="2.1.3" class="anchored" data-anchor-id="was-ist-das-ziel-von-lavaan-wofür-wird-das-package-verwendet"><span class="header-section-number">2.1.3</span> Was ist das Ziel von Lavaan, wofür wird das Package verwendet?</h3>
+<section id="was-ist-das-ziel-von-lavaan-wofür-wird-das-package-verwendet" class="level3" data-number="2.1.5">
+<h3 data-number="2.1.5" class="anchored" data-anchor-id="was-ist-das-ziel-von-lavaan-wofür-wird-das-package-verwendet"><span class="header-section-number">2.1.5</span> Was ist das Ziel von Lavaan, wofür wird das Package verwendet?</h3>
 </section>
-<section id="worauf-basiert-lavaan-syntax-ganz-generell" class="level3" data-number="2.1.4">
-<h3 data-number="2.1.4" class="anchored" data-anchor-id="worauf-basiert-lavaan-syntax-ganz-generell"><span class="header-section-number">2.1.4</span> Worauf basiert Lavaan syntax ganz generell?</h3>
+<section id="worauf-basiert-lavaan-syntax-ganz-generell" class="level3" data-number="2.1.6">
+<h3 data-number="2.1.6" class="anchored" data-anchor-id="worauf-basiert-lavaan-syntax-ganz-generell"><span class="header-section-number">2.1.6</span> Worauf basiert Lavaan syntax ganz generell?</h3>
 <p>Der Syntax basiert auf Regressionsgleichungen in R. Dabei werden ebenfals (wie im <em>lm</em> package) per default keine Intercepts und keine Fehlervarianzen modelliert. Ein ganz grundlegender Syntax kann dabei so aussehen:</p>
 <p>Im Unteren Beispiel spezifizieren wir den <em>strukturellen</em> Teil des Messmodelles. Das bedeuete, dass wir angeben, wie Variablen zusaamenhängen.</p>
 <div class="cell">
@@ -2388,8 +2402,8 @@ loaded via a namespace (and not attached):
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="welche-variablen-spezifikationen-sind-in-lavaan-über-dies-zulässig" class="level3" data-number="2.1.5">
-<h3 data-number="2.1.5" class="anchored" data-anchor-id="welche-variablen-spezifikationen-sind-in-lavaan-über-dies-zulässig"><span class="header-section-number">2.1.5</span> Welche Variablen Spezifikationen sind in Lavaan über dies zulässig?</h3>
+<section id="welche-variablen-spezifikationen-sind-in-lavaan-über-dies-zulässig" class="level3" data-number="2.1.7">
+<h3 data-number="2.1.7" class="anchored" data-anchor-id="welche-variablen-spezifikationen-sind-in-lavaan-über-dies-zulässig"><span class="header-section-number">2.1.7</span> Welche Variablen Spezifikationen sind in Lavaan über dies zulässig?</h3>
 <p>Folgende Spezfifikationen sind zulässig:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model0<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="st">&quot; y1 =~ x1 + x2 + x2 # is manifested by </span></span>
@@ -2406,31 +2420,30 @@ loaded via a namespace (and not attached):
 </div>
 <p>As a general note: Die Reihenfolge in der Variablen in Lavaan definiert ist, spielt keine Rolle.</p>
 </section>
-<section id="warum-müssen-wir-in-lavaan-die-erste-ladung-eines-indikatoren-auf-1-fixieren-und-die-residualvarianz-einer" class="level3" data-number="2.1.6">
-<h3 data-number="2.1.6" class="anchored" data-anchor-id="warum-müssen-wir-in-lavaan-die-erste-ladung-eines-indikatoren-auf-1-fixieren-und-die-residualvarianz-einer"><span class="header-section-number">2.1.6</span> Warum müssen wir in Lavaan die erste Ladung eines Indikatoren auf 1 fixieren, und die Residualvarianz einer</h3>
-<p><em>einzelnen Indikatoravariablen</em> auf 0 fixieren?</p>
-<p>Damit Modelle (In denen keine Mittelwertsstruktur geschätzt wird) identifizerbar sind. Das ist deshalb der Fall, weil die Skalen unserer Latenten Variablen artifiziell Konstruiert sind (Intervallskalen). Im Vergleich zu Ratioskalen, haben solche Skalen keinen Nullpunkt.</p>
+<section id="warum-müssen-wir-in-lavaan-die-erste-ladung-eines-indikatoren-auf-1-fixieren-und-die-residualvarianz-einer-einzelnen-indikatoravariablen-auf-0-fixieren" class="level3" data-number="2.1.8">
+<h3 data-number="2.1.8" class="anchored" data-anchor-id="warum-müssen-wir-in-lavaan-die-erste-ladung-eines-indikatoren-auf-1-fixieren-und-die-residualvarianz-einer-einzelnen-indikatoravariablen-auf-0-fixieren"><span class="header-section-number">2.1.8</span> Warum müssen wir in Lavaan die erste Ladung eines Indikatoren auf 1 fixieren, und die Residualvarianz einer <em>einzelnen Indikatoravariablen</em> auf 0 fixieren?</h3>
+<p>Damit Modelle (In denen keine Mittelwertsstruktur geschätzt wird) identifizerbar sind. Das ist deshalb der Fall, weil die Skalen unserer Latenten Variablen artifiziell Konstruiert sind (Intervallskalen). Im Vergleich zu Ratioskalen, haben solche Skalen keinen natürlichen Nullpunkt.</p>
 <p>Wenn zusätzlich eine Mittlwertsstruktur geschätzt wird, müssen wir ebenfalls die Mittelwerte beobachteter und latenter Variablen frei Schätzen.</p>
 </section>
-<section id="how-can-one-get-the-parameter-estimates-from-a-fitted-lavaan-object-if-one-is-not-interested-in-a-tidy-output" class="level3" data-number="2.1.7">
-<h3 data-number="2.1.7" class="anchored" data-anchor-id="how-can-one-get-the-parameter-estimates-from-a-fitted-lavaan-object-if-one-is-not-interested-in-a-tidy-output"><span class="header-section-number">2.1.7</span> How can one get the parameter estimates from a fitted lavaan object if one is not interested in a tidy output?</h3>
+<section id="how-can-one-get-the-parameter-estimates-from-a-fitted-lavaan-object-if-one-is-not-interested-in-a-tidy-output" class="level3" data-number="2.1.9">
+<h3 data-number="2.1.9" class="anchored" data-anchor-id="how-can-one-get-the-parameter-estimates-from-a-fitted-lavaan-object-if-one-is-not-interested-in-a-tidy-output"><span class="header-section-number">2.1.9</span> How can one get the parameter estimates from a fitted lavaan object if one is not interested in a tidy output?</h3>
 <p>With:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parameterEstimates(fitted_model)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This will return a dataframe with all estimated parameters of the model.</p>
 </section>
-<section id="wenn-wir-in-lavaan-labels-vergeben-warum-labeln-wir-die-ersten-indikatoren-nicht" class="level3" data-number="2.1.8">
-<h3 data-number="2.1.8" class="anchored" data-anchor-id="wenn-wir-in-lavaan-labels-vergeben-warum-labeln-wir-die-ersten-indikatoren-nicht"><span class="header-section-number">2.1.8</span> Wenn wir in Lavaan Labels vergeben, warum labeln wir die ersten Indikatoren nicht?</h3>
-<p>Weil die Ladungen dieser Indikattoren auf 1 festgelegt sind.</p>
+<section id="wenn-wir-in-lavaan-labels-vergeben-warum-labeln-wir-die-ersten-indikatoren-nicht" class="level3" data-number="2.1.10">
+<h3 data-number="2.1.10" class="anchored" data-anchor-id="wenn-wir-in-lavaan-labels-vergeben-warum-labeln-wir-die-ersten-indikatoren-nicht"><span class="header-section-number">2.1.10</span> Wenn wir in Lavaan Labels vergeben, warum labeln wir die ersten Indikatoren nicht?</h3>
+<p>Weil die Ladungen dieser Indikattoren auf 1 festgelegt sind. Das ist Lavaans default der code funktion.</p>
 </section>
-<section id="welche-teile-können-in-strukturgleichungsmodellen-generell-unterschieden-werden" class="level3" data-number="2.1.9">
-<h3 data-number="2.1.9" class="anchored" data-anchor-id="welche-teile-können-in-strukturgleichungsmodellen-generell-unterschieden-werden"><span class="header-section-number">2.1.9</span> Welche Teile können in Strukturgleichungsmodellen generell unterschieden werden?</h3>
+<section id="welche-teile-können-in-strukturgleichungsmodellen-generell-unterschieden-werden" class="level3" data-number="2.1.11">
+<h3 data-number="2.1.11" class="anchored" data-anchor-id="welche-teile-können-in-strukturgleichungsmodellen-generell-unterschieden-werden"><span class="header-section-number">2.1.11</span> Welche Teile können in Strukturgleichungsmodellen generell unterschieden werden?</h3>
 <p>Ein “Messmodell” und ein Strukturmodell.<br>
 Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein Strukturmodell ist hingegen auf die gerichteten Zusammenhänge zwischen latenten Konsturkuten ausgerichtet, die durch Messmodelle beschrieben werden.</p>
 </section>
-<section id="was-sind-drei-gefahren-bei-der-verwendung-von-sem" class="level3" data-number="2.1.10">
-<h3 data-number="2.1.10" class="anchored" data-anchor-id="was-sind-drei-gefahren-bei-der-verwendung-von-sem"><span class="header-section-number">2.1.10</span> Was sind drei Gefahren bei der Verwendung von SEM?</h3>
+<section id="was-sind-drei-gefahren-bei-der-verwendung-von-sem" class="level3" data-number="2.1.12">
+<h3 data-number="2.1.12" class="anchored" data-anchor-id="was-sind-drei-gefahren-bei-der-verwendung-von-sem"><span class="header-section-number">2.1.12</span> Was sind drei Gefahren bei der Verwendung von SEM?</h3>
 <ul>
 <li>Übergeneralisierung der Ergebnisse (von der <em>jetzigen</em> <em>lokalen</em> zu einer <em>globalen und zeitlich kontinuierlichen</em> Population ).</li>
 <li>bei Ergebnisdarstellung in Modellform häufiger Fehlschluss, dass die an einer Stichprobe gewonnenen Ergebnisse für die Population gültig sind ▪ Confirmation Bias ▪ bei gutem Modellfit häufig Vernachlässigung von möglicherweise besseren Alternativmodellen</li>
@@ -2441,12 +2454,12 @@ Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein Strukturmodell 
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>syntax <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="wie-können-wir-im-rahmen-von-sem-komplexitätsreduzierende-massnahmen-vornehmen" class="level3" data-number="2.1.11">
-<h3 data-number="2.1.11" class="anchored" data-anchor-id="wie-können-wir-im-rahmen-von-sem-komplexitätsreduzierende-massnahmen-vornehmen"><span class="header-section-number">2.1.11</span> Wie können wir im Rahmen von SEM komplexitätsreduzierende Massnahmen vornehmen?</h3>
+<section id="wie-können-wir-im-rahmen-von-sem-komplexitätsreduzierende-massnahmen-vornehmen" class="level3" data-number="2.1.13">
+<h3 data-number="2.1.13" class="anchored" data-anchor-id="wie-können-wir-im-rahmen-von-sem-komplexitätsreduzierende-massnahmen-vornehmen"><span class="header-section-number">2.1.13</span> Wie können wir im Rahmen von SEM komplexitätsreduzierende Massnahmen vornehmen?</h3>
 <p>Wir können Parameter Fixieren, einschränken (idr. equality constraints einführen). Wenn wir Parameter frei schätzen, findet keine Komplexitätsreduktion statt.</p>
 </section>
-<section id="please-describe-the-way-in-which-the-output-of-measurement-objects-given-by-summary-can-be-analyzed" class="level3" data-number="2.1.12">
-<h3 data-number="2.1.12" class="anchored" data-anchor-id="please-describe-the-way-in-which-the-output-of-measurement-objects-given-by-summary-can-be-analyzed"><span class="header-section-number">2.1.12</span> Please describe the way in which the output of measurement objects given by summary can be analyzed</h3>
+<section id="please-describe-the-way-in-which-the-output-of-measurement-objects-given-by-summary-can-be-analyzed" class="level3" data-number="2.1.14">
+<h3 data-number="2.1.14" class="anchored" data-anchor-id="please-describe-the-way-in-which-the-output-of-measurement-objects-given-by-summary-can-be-analyzed"><span class="header-section-number">2.1.14</span> Please describe the way in which the output of measurement objects given by summary can be analyzed</h3>
 <p>Bei intercepts: Variablen mit Punkt davor = intercepts, sonst mittlwerte.</p>
 <p>Bei Varianzen: Mit Punkt Davor = residuals. Ohne Punkt davor = Varianzen.</p>
 <p>(basically, das Zeugs aus einer Regression ist mit Punkten)</p>
@@ -2455,10 +2468,7 @@ Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein Strukturmodell 
 <section id="exercises" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.2</span> Exercises</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semTools)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="erstelle-ein-messmodell-mit-calling-t1.-welche-funktion-verwenden-sie-dazu-warum-zudem-füge-dem-modell-residualkorrelationen-hinzu" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="erstelle-ein-messmodell-mit-calling-t1.-welche-funktion-verwenden-sie-dazu-warum-zudem-füge-dem-modell-residualkorrelationen-hinzu"><span class="header-section-number">2.2.1</span> Erstelle ein Messmodell mit calling t1. Welche Funktion verwenden sie dazu, warum? Zudem: Füge dem Modell Residualkorrelationen hinzu</h3>
@@ -2742,20 +2752,29 @@ Variances:
 <h1 data-number="3"><span class="header-section-number">3</span> Missing data</h1>
 <section id="theoretische-übungen-1" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="theoretische-übungen-1"><span class="header-section-number">3.1</span> Theoretische Übungen</h2>
-<section id="welche-unterschiedlichen-arten-von-missing-data-kennen-wir-gib-jeweils-ein-beispiel" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="welche-unterschiedlichen-arten-von-missing-data-kennen-wir-gib-jeweils-ein-beispiel"><span class="header-section-number">3.1.1</span> Welche unterschiedlichen Arten von Missing Data kennen wir? Gib jeweils ein Beispiel</h3>
+<section id="was-sind-gründe-für-missing-data" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="was-sind-gründe-für-missing-data"><span class="header-section-number">3.1.1</span> Was sind Gründe für Missing Data?</h3>
+<ul>
+<li><p>Person gibt absichtlich keine Antwort auf bestimmte Arten von Fragen (MNAR).</p></li>
+<li><p>Person mit hoher Unsicherheits Intoleranz gibt keine Antwort auf Fragen.</p></li>
+<li><p>Person gibt keine Antwort auf bestimmte Arten von Fragen, weil der Computer zufällig abstürzt. (MCAR).</p></li>
+<li><p>Person gibt keine Antwort auf ein Item, das mit einem Video zusammen präsentiert wird. Nur Personen mit einem älteren Computer haben das Problem (MNAR).</p></li>
+</ul>
+</section>
+<section id="welche-unterschiedlichen-arten-von-missing-data-kennen-wir-gib-jeweils-ein-beispiel" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="welche-unterschiedlichen-arten-von-missing-data-kennen-wir-gib-jeweils-ein-beispiel"><span class="header-section-number">3.1.2</span> Welche unterschiedlichen Arten von Missing Data kennen wir? Gib jeweils ein Beispiel</h3>
 <p>MAR (missing at random): Ob ein Wert fehlt ist unabhängig vom wahren Wert der eigenen Variable, wenn für andere Variablen im Datensatz kontrolliert wurde. MCAR (missing completely at random): Fehlende Werte unabhängig von Werten im Datensatz (Wahre Werte und nicht wahre Werte) MNAR (missing not at random): missing data are dependent upon the true values on the variable itself &gt; fex. the higher the temperature, the higher</p>
 </section>
-<section id="was-sind-einige-probleme-von-listwise-deletion" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="was-sind-einige-probleme-von-listwise-deletion"><span class="header-section-number">3.1.2</span> Was sind einige Probleme von listwise deletion?</h3>
-<p>Wenn daten MCAR sind zwar okay, aber nur wenn nicht mehr als 2% der Fälle gelöscht werden. Problem: Es kann oft dazu kommen, dass mehr Daten gelöscht werden wenn viel Variablen im Datensatz sind.</p>
+<section id="was-sind-einige-probleme-von-listwise-deletion" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="was-sind-einige-probleme-von-listwise-deletion"><span class="header-section-number">3.1.3</span> Was sind einige Probleme von listwise deletion?</h3>
+<p>Wenn daten MCAR sind zwar okay, aber nur wenn nicht mehr als 2% der Fälle gelöscht werden. Problem: Es kann oft dazu kommen, dass mehr Daten gelöscht werden wenn viel Variablen im Datensatz sind. Zudem kann der Schätzer gebiased werden. wenn Daten MAR sind &gt; Wir werden systematisch Daten von der Confounder Variable löschen.</p>
 </section>
-<section id="was-sollte-anstelle-von-listwise-deletion-gemacht-werden" class="level3" data-number="3.1.3">
-<h3 data-number="3.1.3" class="anchored" data-anchor-id="was-sollte-anstelle-von-listwise-deletion-gemacht-werden"><span class="header-section-number">3.1.3</span> Was sollte anstelle von listwise deletion gemacht werden?</h3>
+<section id="was-sollte-anstelle-von-listwise-deletion-gemacht-werden" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="was-sollte-anstelle-von-listwise-deletion-gemacht-werden"><span class="header-section-number">3.1.4</span> Was sollte anstelle von listwise deletion gemacht werden?</h3>
 <p>Mulitple Imputation oder Full information Maximum Likelihood. Full Information Maximum Likelihood schätzt die Modellparameter unter berücksichtigung der Missingness “on the fly”, während multiple imputation die vermissten Daten direkt schätzt. Im Seminar verwenden FIML.</p>
 </section>
-<section id="wie-sind-latente-variablen-in-messmodellen-verbunden" class="level3" data-number="3.1.4">
-<h3 data-number="3.1.4" class="anchored" data-anchor-id="wie-sind-latente-variablen-in-messmodellen-verbunden"><span class="header-section-number">3.1.4</span> wie sind latente Variablen in Messmodellen verbunden?</h3>
+<section id="wie-sind-latente-variablen-in-messmodellen-verbunden" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="wie-sind-latente-variablen-in-messmodellen-verbunden"><span class="header-section-number">3.1.5</span> wie sind latente Variablen in Messmodellen verbunden?</h3>
 <p>Sie korrelieren oder sind nicht verbunden. <strong>Wichtig ist:</strong> per default korrelieren Konstrukte. Wenn sie nicht korrelieren, dann bedeutet das, dass wir die Daten einschränken. Wenn wir sie korrelieren lassen, schränken wir die (neu geschätzten) Daten nicht ein.</p>
 </section>
 </section>
@@ -5143,17 +5162,17 @@ Latent Variables:
                    Estimate  Std.Err  z-value  P(&gt;|z|) ci.lower ci.upper
   call1 =~                                                              
     call1a            1.000                               1.000    1.000
-    call1b            1.095    0.072   15.299    0.000    0.948    1.235
-    call1c            0.923    0.053   17.376    0.000    0.820    1.032
+    call1b            1.095    0.073   14.993    0.000    0.955    1.235
+    call1c            0.923    0.056   16.494    0.000    0.824    1.042
   copi1 =~                                                              
     copi1a            1.000                               1.000    1.000
-    copi1b            1.190    0.046   25.913    0.000    1.108    1.290
-    copi1c            1.248    0.058   21.703    0.000    1.141    1.370
-    copi1d            1.189    0.054   21.901    0.000    1.088    1.302
+    copi1b            1.190    0.045   26.313    0.000    1.107    1.279
+    copi1c            1.248    0.058   21.351    0.000    1.131    1.356
+    copi1d            1.189    0.054   22.175    0.000    1.085    1.292
   enle1 =~                                                              
     enle1a            1.000                               1.000    1.000
-    enle1b            0.944    0.073   13.004    0.000    0.798    1.085
-    enle1c            1.090    0.090   12.069    0.000    0.917    1.270
+    enle1b            0.944    0.074   12.690    0.000    0.801    1.102
+    enle1c            1.090    0.091   11.953    0.000    0.922    1.267
    Std.lv  Std.all
                   
     1.128    0.897
@@ -5172,11 +5191,11 @@ Latent Variables:
 Regressions:
                    Estimate  Std.Err  z-value  P(&gt;|z|) ci.lower ci.upper
   call1 ~                                                               
-    copi1     (cp)    0.178    0.036    4.907    0.000    0.105    0.244
+    copi1     (cp)    0.178    0.036    5.009    0.000    0.106    0.244
   enle1 ~                                                               
-    copi1      (a)    0.228    0.035    6.592    0.000    0.165    0.302
+    copi1      (a)    0.228    0.036    6.287    0.000    0.163    0.305
   call1 ~                                                               
-    enle1      (b)    0.848    0.079   10.706    0.000    0.689    1.003
+    enle1      (b)    0.848    0.082   10.374    0.000    0.663    0.986
    Std.lv  Std.all
                   
     0.244    0.244
@@ -5187,19 +5206,19 @@ Regressions:
 
 Variances:
                    Estimate  Std.Err  z-value  P(&gt;|z|) ci.lower ci.upper
-   .call1a            0.309    0.056    5.467    0.000    0.204    0.433
-   .call1b            0.816    0.113    7.245    0.000    0.614    1.069
-   .call1c            0.663    0.083    7.991    0.000    0.506    0.834
-   .copi1a            1.202    0.124    9.663    0.000    0.961    1.462
-   .copi1b            0.527    0.099    5.330    0.000    0.354    0.741
-   .copi1c            0.475    0.117    4.051    0.000    0.291    0.745
-   .copi1d            0.471    0.075    6.269    0.000    0.335    0.636
-   .enle1a            0.786    0.070   11.274    0.000    0.660    0.941
-   .enle1b            0.539    0.063    8.514    0.000    0.435    0.685
-   .enle1c            0.488    0.076    6.436    0.000    0.359    0.653
-   .call1             0.436    0.055    7.896    0.000    0.337    0.559
-    copi1             2.374    0.206   11.520    0.000    1.980    2.777
-   .enle1             0.705    0.094    7.485    0.000    0.549    0.919
+   .call1a            0.309    0.061    5.069    0.000    0.209    0.453
+   .call1b            0.816    0.110    7.389    0.000    0.629    1.093
+   .call1c            0.663    0.088    7.510    0.000    0.510    0.858
+   .copi1a            1.202    0.121    9.934    0.000    0.999    1.482
+   .copi1b            0.527    0.096    5.463    0.000    0.351    0.739
+   .copi1c            0.475    0.114    4.153    0.000    0.292    0.747
+   .copi1d            0.471    0.072    6.519    0.000    0.335    0.623
+   .enle1a            0.786    0.069   11.432    0.000    0.660    0.933
+   .enle1b            0.539    0.065    8.290    0.000    0.411    0.667
+   .enle1c            0.488    0.076    6.438    0.000    0.353    0.654
+   .call1             0.436    0.056    7.731    0.000    0.326    0.555
+    copi1             2.374    0.206   11.509    0.000    2.007    2.803
+   .enle1             0.705    0.094    7.497    0.000    0.542    0.919
    Std.lv  Std.all
     0.309    0.195
     0.816    0.349
@@ -5217,8 +5236,8 @@ Variances:
 
 Defined Parameters:
                    Estimate  Std.Err  z-value  P(&gt;|z|) ci.lower ci.upper
-    ab                0.194    0.033    5.848    0.000    0.134    0.268
-    total             0.372    0.036   10.472    0.000    0.305    0.446
+    ab                0.194    0.035    5.583    0.000    0.133    0.270
+    total             0.372    0.034   10.794    0.000    0.308    0.448
    Std.lv  Std.all
     0.265    0.265
     0.508    0.508</code></pre>
@@ -5858,19 +5877,39 @@ fit9x.1 - fit9x.3  3 0.008 -0.006 -0.007 0.011 48.116  35.897</code></pre>
 <h1 data-number="10"><span class="header-section-number">10</span> Wachstumskurven Modelle</h1>
 <section id="theoretische-übungen-8" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="theoretische-übungen-8"><span class="header-section-number">10.1</span> Theoretische Übungen</h2>
-<section id="warum-ist-es-im-rahmen-eines-bivariaten-wachstumskurven-modelles-sinnvoll-residum-der-manifesten-varaiblen-korrelieren-zu-lassen-wie-sollten-die-korrelation-modelliert-werden" class="level3" data-number="10.1.1">
-<h3 data-number="10.1.1" class="anchored" data-anchor-id="warum-ist-es-im-rahmen-eines-bivariaten-wachstumskurven-modelles-sinnvoll-residum-der-manifesten-varaiblen-korrelieren-zu-lassen-wie-sollten-die-korrelation-modelliert-werden"><span class="header-section-number">10.1.1</span> Warum ist es im Rahmen eines bivariaten Wachstumskurven Modelles sinnvoll, residum der Manifesten Varaiblen korrelieren zu lassen? Wie sollten die Korrelation modelliert werden?</h3>
+<section id="was-ist-ein-vorteil-von-wachstumskurven-modellen-im-vergleich-zu-traditionellen-regressions-methoden" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="was-ist-ein-vorteil-von-wachstumskurven-modellen-im-vergleich-zu-traditionellen-regressions-methoden"><span class="header-section-number">10.1.1</span> Was ist ein Vorteil von Wachstumskurven Modellen im Vergleich zu “traditionellen” regressions Methoden?</h3>
+<p>Bei traditionellen Methoden wird der Varianz der Parameter wenig rechnung getragen. In Wachstumskurven Modellen wird Variation zwischen Individuen systematisch variiert. Die Verteilung der Modellparameter (zB. Slope, Intercept) werden nicht als zufälligen Messfehler modelliert, sondern als zugrundeliegende Attribute der “echten Verteilung”.</p>
+<p>Das coole daran: Wir erhalten einerseits einen Schätzwert für die Varianz der Parameter und können andererseits diese Varianz und Covarianz mit anderen Parametern parametern (zB. katagoriales gender) korrelieren lassen.</p>
+</section>
+<section id="wie-viele-parameter-werden-in-einem-latent-growth-curve-model-mit-linearem-trend-über-4-messzeitpunkte-geschätzt" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="wie-viele-parameter-werden-in-einem-latent-growth-curve-model-mit-linearem-trend-über-4-messzeitpunkte-geschätzt"><span class="header-section-number">10.1.2</span> Wie viele Parameter werden in einem latent growth curve model mit linearem trend über 4 messzeitpunkte geschätzt?</h3>
+<p>2* intercepts (von Slope und Intercept) + 2* variance (von slope und intercept) + 1 * covariance between slope and intercept + 4* residual variance at <strong>each</strong> timepoint.</p>
+<p>= 9 Parameter.</p>
+</section>
+<section id="welche-bivariaten-modelle-sind-generll-möglich" class="level3" data-number="10.1.3">
+<h3 data-number="10.1.3" class="anchored" data-anchor-id="welche-bivariaten-modelle-sind-generll-möglich"><span class="header-section-number">10.1.3</span> Welche bivariaten Modelle sind generll möglich?</h3>
+<p>Latent growth curve model (simples Wachstumskurven Modell) ; Latent growth curve model mit time invariant covariate (geschlecht, hautfarbe, etc.) Latent growth curve model mit time varying covariate: Mit Alkoholkonsum als Kovariate.</p>
+</section>
+<section id="warum-ist-es-im-rahmen-eines-bivariaten-wachstumskurven-modelles-sinnvoll-residum-der-manifesten-varaiblen-korrelieren-zu-lassen-wie-sollten-die-korrelation-modelliert-werden" class="level3" data-number="10.1.4">
+<h3 data-number="10.1.4" class="anchored" data-anchor-id="warum-ist-es-im-rahmen-eines-bivariaten-wachstumskurven-modelles-sinnvoll-residum-der-manifesten-varaiblen-korrelieren-zu-lassen-wie-sollten-die-korrelation-modelliert-werden"><span class="header-section-number">10.1.4</span> Warum ist es im Rahmen eines bivariaten Wachstumskurven Modelles sinnvoll, residum der Manifesten Varaiblen korrelieren zu lassen? Wie sollten die Korrelation modelliert werden?</h3>
 <p>Es ist sinnvoll Die Residuen von Variablen korrelieren zu lassen, die zum gleichen Zeitpunkt gemessen wurden. Ziel ist es Messwellen Effekte zu Kontrollieren: Das Wetter könnte bspw. eine Einfluss auf die Antworten gehabt haben, der zu einem bestimmten Zeitpunkt in beiden Variablen gleich ist.</p>
 </section>
-<section id="was-ist-der-unterschied-zwischen-modellen-mit-time-varying-covariates-und-cross-lagged-panel-modellen" class="level3" data-number="10.1.2">
-<h3 data-number="10.1.2" class="anchored" data-anchor-id="was-ist-der-unterschied-zwischen-modellen-mit-time-varying-covariates-und-cross-lagged-panel-modellen"><span class="header-section-number">10.1.2</span> Was ist der Unterschied zwischen Modellen mit Time Varying covariates und cross lagged panel modellen?</h3>
+<section id="welche-aussagen-können-im-rahmen-von-time-varying-ltms-gemacht-werden-welche-aussagen-können-im-rahmen-von-fully-multivariate-ltms-gemacht-werden-welche-aussagen-können-im-rahmen-von-autoregressiven-latent-trajectory-models-alts-gemacht-werden" class="level3" data-number="10.1.5">
+<h3 data-number="10.1.5" class="anchored" data-anchor-id="welche-aussagen-können-im-rahmen-von-time-varying-ltms-gemacht-werden-welche-aussagen-können-im-rahmen-von-fully-multivariate-ltms-gemacht-werden-welche-aussagen-können-im-rahmen-von-autoregressiven-latent-trajectory-models-alts-gemacht-werden"><span class="header-section-number">10.1.5</span> Welche Aussagen können im Rahmen von Time varying LTMs gemacht werden? Welche Aussagen können im Rahmen von fully-multivariate LTMs gemacht werden? Welche Aussagen können im Rahmen von autoregressiven latent trajectory models (ALTs) gemacht werden?</h3>
+<p>time varying LTMs: Was für ein Einfluss hat ein Konstrukt y auf Konstrukt z zu Zeitpunkt i, der über den Wachstumsprozess von Konstrukt z hinausgeht. Basically: Gibt es zu Zeitpunkt(en) i einen besonders positiven oder negativen Einfluss von y auf z?</p>
+<p>fully multivariate ltms: Wie hängen die Wachstumsprozesse zweier Konstrukte Zusammen? (Achtung: Keine Kausalschlüsse möglich.)</p>
+<p>autoregressive latent trajectory modelle: note sure really (are these essentially cross lagged panel models?)</p>
 </section>
-<section id="warum-sollte-eine-time-varying-covariate-zentriert-werden" class="level3" data-number="10.1.3">
-<h3 data-number="10.1.3" class="anchored" data-anchor-id="warum-sollte-eine-time-varying-covariate-zentriert-werden"><span class="header-section-number">10.1.3</span> Warum sollte eine Time Varying Covariate zentriert werden?</h3>
+<section id="was-ist-der-unterschied-zwischen-modellen-mit-time-varying-covariates-und-cross-lagged-panel-modellen" class="level3" data-number="10.1.6">
+<h3 data-number="10.1.6" class="anchored" data-anchor-id="was-ist-der-unterschied-zwischen-modellen-mit-time-varying-covariates-und-cross-lagged-panel-modellen"><span class="header-section-number">10.1.6</span> Was ist der Unterschied zwischen Modellen mit Time Varying covariates und cross lagged panel modellen?</h3>
+</section>
+<section id="warum-sollte-eine-time-varying-covariate-zentriert-werden" class="level3" data-number="10.1.7">
+<h3 data-number="10.1.7" class="anchored" data-anchor-id="warum-sollte-eine-time-varying-covariate-zentriert-werden"><span class="header-section-number">10.1.7</span> Warum sollte eine Time Varying Covariate zentriert werden?</h3>
 <p>Weil so die Effekte der Wachstumsfaktoren besser interpretiert werden können: Der Mittelwert der Wachstumsfaktoren entspricht nun dem Mittelwert einer Person mit durchschnittlichen Werten auf den Time Varying Covariates.</p>
 </section>
-<section id="was-ist-der-grund-für-den-einbezug-von-tvcs-in-ein-growth-curve-modell" class="level3" data-number="10.1.4">
-<h3 data-number="10.1.4" class="anchored" data-anchor-id="was-ist-der-grund-für-den-einbezug-von-tvcs-in-ein-growth-curve-modell"><span class="header-section-number">10.1.4</span> Was ist der Grund für den Einbezug von TVCs in ein growth curve modell?</h3>
+<section id="was-ist-der-grund-für-den-einbezug-von-tvcs-in-ein-growth-curve-modell" class="level3" data-number="10.1.8">
+<h3 data-number="10.1.8" class="anchored" data-anchor-id="was-ist-der-grund-für-den-einbezug-von-tvcs-in-ein-growth-curve-modell"><span class="header-section-number">10.1.8</span> Was ist der Grund für den Einbezug von TVCs in ein growth curve modell?</h3>
 <p>Es kann getestet werden, ob ein Konstrukt Varianz in einem anderen Konstrukt erklärt (zu verschiednene Zeitpunkten), die über die Erklärte Varianz durch den Wachstumsverlauf des Konstruktes hinaus geht.</p>
 </section>
 </section>

@@ -55,6 +55,45 @@ library(readxl)
 
 ## Theoretische Übungen
 
+### Was sind drei Möglichkeiten um eine Skala zu Fixieren im Rahmen von SEM? Was sind die jeweiligen Tradeoffs?
+
+1.  Mean latent var = 0, sd = 1. Skala wird z standardisiert (jeder Wert
+    entspricht seiner Abweichung vom Mittelwert in
+    Standardabweichungen). Dadurch verlieren wir Infos über die
+    usrprüngliche Metrik der Skala
+2.  Ladung des ersten Indikators auf 0 fixieren \> Alle Werte im
+    Verhältnis zu dem ersten Indikator. \> Wir verlieren Infos über die
+    Ladung eines einzelnen
+3.  Durchschnittliche Ladung von Indikatoren auf 1, durschnittliche
+    Ladung der Intercepts auf 0 Fixieren \> Latenter mean und Latente sd
+    entsprechen nun der Skala der Indikatoren. (Effects coding nach
+    little et al. 2007) - Erfordert mindestens starke invarianz.
+
+### Wogegen wird der Fit eines Modelles mit inkrementellen Fit-Indizes verglichen? Was schlagen Little et al als Alternative vor?
+
+Relative (incremental) fit indices such as the CFI and the NNFI/TLI are
+computed by comparing the hypothesized model against a null model—a
+worst-fitting model nested within the hypothesized model. Most software
+fits this automatically, and by default the null model is the
+**independence model**, which assumes zero covariance among all
+indicators while freely estimating their variances. For single-group,
+single-occasion applications this is a reasonable baseline, because it
+calibrates how much covariation among indicators a substantively
+meaningful model can recover.
+
+For longitudinal (and multiple-group) data, the independence assumption
+captures only one piece of the appropriate "null" expectation. When the
+research question concerns whether means and/or variances change across
+time, the independence model is problematic: a model that equates means
+or variances across time is not nested within the independence model, so
+the independence model no longer serves as an adequate (nested)
+baseline. The authors recommend instead a null model in which **neither
+the variances nor the means of corresponding indicators change over
+time**.
+
+-\> Ein solches Null modell müsste basically eigens gefittet werden und
+dann manuell verglichen werden.
+
 ### Was sind dtrukturelle Gleichungsmodelle?
 
 Eine vielzahl an Methoden (insbesondere regressionanalytische und
@@ -1712,7 +1751,16 @@ Variablen gleich ist.
 
 ### Welche Aussagen können im Rahmen von Time varying LTMs gemacht werden? Welche Aussagen können im Rahmen von fully-multivariate LTMs gemacht werden? Welche Aussagen können im Rahmen von autoregressiven latent trajectory models (ALTs) gemacht werden?
 
-time varying LTMs:
+time varying LTMs: Was für ein Einfluss hat ein Konstrukt y auf
+Konstrukt z zu Zeitpunkt i, der über den Wachstumsprozess von Konstrukt
+z hinausgeht. Basically: Gibt es zu Zeitpunkt(en) i einen besonders
+positiven oder negativen Einfluss von y auf z?
+
+fully multivariate ltms: Wie hängen die Wachstumsprozesse zweier
+Konstrukte Zusammen? (Achtung: Keine Kausalschlüsse möglich.)
+
+autoregressive latent trajectory modelle: note sure really (are these
+essentially cross lagged panel models?)
 
 ### Was ist der Unterschied zwischen Modellen mit Time Varying covariates und cross lagged panel modellen?
 
