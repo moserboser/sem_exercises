@@ -16,6 +16,9 @@ format:
 execute:
   warning: false
   message: false
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r}
@@ -27,8 +30,8 @@ library(tidyverse)
 
 ## System Information
 
-The session and system information below documents the environment in which
-this report was rendered.
+The session and system information below documents the environment in
+which this report was rendered.
 
 ```{r}
 #| label: system-info
@@ -48,38 +51,46 @@ library(readr)
 library(readxl)
 ```
 
-
 # Einführung
 
 ## Theoretische Übungen
 
 ### Was sind dtrukturelle Gleichungsmodelle?
 
-Eine vielzahl an Methoden (insbesondere regressionanalytische und faktorenanalytische), die verwendet werden können, um reduktionen in der Komplexität von Daten zu testen.
-Dabei werden Varianzen, Kovarianzen und Korrelationen andhand von Strukturgleichungen geschätzt.
+Eine vielzahl an Methoden (insbesondere regressionanalytische und
+faktorenanalytische), die verwendet werden können, um reduktionen in der
+Komplexität von Daten zu testen. Dabei werden Varianzen, Kovarianzen und
+Korrelationen andhand von Strukturgleichungen geschätzt.
 
-Die Modelle gehen in der Regel von einer latenten Struktur aus, die gewisse Einschränkungen bezüglich der beobachteten Varianzen, Kovarianzen und Korrelationen bedingt. 
-Eine Hypothese kann durch den Vergleich zwischen Modellen oder dem Testen einzelner Modelle angeschaut werden. Dabei wird oft ein Schmaler Grad zwischen 
-Induktion und Hypothetischer Deduktion gegangen.
+Die Modelle gehen in der Regel von einer latenten Struktur aus, die
+gewisse Einschränkungen bezüglich der beobachteten Varianzen,
+Kovarianzen und Korrelationen bedingt. Eine Hypothese kann durch den
+Vergleich zwischen Modellen oder dem Testen einzelner Modelle angeschaut
+werden. Dabei wird oft ein Schmaler Grad zwischen Induktion und
+Hypothetischer Deduktion gegangen.
 
 ### Unterscheide die Pfadanalyse von der konfirmatorischen Faktorneanalyse. Was unterscheidet die beiden Ansätze?
 
-- Im Rahmen der Pfadanalyse werden **nur** manifeste Variablen angeschaut. 
-Dabei wird zwischen endogenen und exogenen Variablen unterschieden auf Exogene 
-Variablen zeigt kein gerichter Pfeil. Auf endogene Variablen zeit ein gerichteter Pfeil.
-- Im Rahmen der KFA werden zusätzliche Latente (also rein theoretisch angenommene) Variablen 
-angeschaut. Zusammenhänge sind dabei *nie* gerichtet, sondern nur korrelativ. 
+- Im Rahmen der Pfadanalyse werden **nur** manifeste Variablen
+  angeschaut. Dabei wird zwischen endogenen und exogenen Variablen
+  unterschieden auf Exogene Variablen zeigt kein gerichter Pfeil. Auf
+  endogene Variablen zeit ein gerichteter Pfeil.
+- Im Rahmen der KFA werden zusätzliche Latente (also rein theoretisch
+  angenommene) Variablen angeschaut. Zusammenhänge sind dabei *nie*
+  gerichtet, sondern nur korrelativ.
 
 ### Was ist das Ziel von Lavaan, wofür wird das Package verwendet?
 
+### Worauf basiert Lavaan syntax ganz generell?
 
-### Worauf basiert Lavaan syntax ganz generell? 
+Der Syntax basiert auf Regressionsgleichungen in R. Dabei werden
+ebenfals (wie im *lm* package) per default keine Intercepts und keine
+Fehlervarianzen modelliert. Ein ganz grundlegender Syntax kann dabei so
+aussehen:
 
-Der Syntax basiert auf Regressionsgleichungen in R. 
-Dabei werden ebenfals (wie im *lm* package) per default keine Intercepts und keine Fehlervarianzen modelliert.
-Ein ganz grundlegender Syntax kann dabei so aussehen:
-
-Im Unteren Beispiel spezifizieren wir den *strukturellen* Teil des Messmodelles. Das bedeuete, dass wir angeben, wie Variablen zusaamenhängen. 
+Im Unteren Beispiel spezifizieren wir den *strukturellen* Teil des
+Messmodelles. Das bedeuete, dass wir angeben, wie Variablen
+zusaamenhängen.
 
 ```{r}
 model0.1 <- "y1 ~ x1 + x2 + x3 # note that y_0 and e are missing 
@@ -87,6 +98,7 @@ y2 ~ x4 + x5 + x6
 y3 ~ y1 + y2  
 "
 ```
+
 ### Welche Variablen Spezifikationen sind in Lavaan über dies zulässig?
 
 Folgende Spezfifikationen sind zulässig:
@@ -105,46 +117,55 @@ x3 < x5 # is larger than  (also works with is smaller than)
 "
 ```
 
-As a general note: Die Reihenfolge in der Variablen in Lavaan definiert ist, 
-spielt keine Rolle. 
+As a general note: Die Reihenfolge in der Variablen in Lavaan definiert
+ist, spielt keine Rolle.
 
-### Warum müssen wir in Lavaan die erste Ladung eines Indikatoren auf 1 fixieren,  und die Residualvarianz einer 
-*einzelnen Indikatoravariablen* auf 0 fixieren? 
+### Warum müssen wir in Lavaan die erste Ladung eines Indikatoren auf 1 fixieren, und die Residualvarianz einer *einzelnen Indikatoravariablen* auf 0 fixieren?
 
-Damit Modelle (In denen keine Mittelwertsstruktur geschätzt wird) identifizerbar sind.
-Das ist deshalb der Fall, weil die Skalen unserer Latenten Variablen artifiziell Konstruiert sind (Intervallskalen).
-Im Vergleich zu Ratioskalen, haben solche Skalen keinen Nullpunkt. 
+Damit Modelle (In denen keine Mittelwertsstruktur geschätzt wird)
+identifizerbar sind. Das ist deshalb der Fall, weil die Skalen unserer
+Latenten Variablen artifiziell Konstruiert sind (Intervallskalen). Im
+Vergleich zu Ratioskalen, haben solche Skalen keinen natürlichen
+Nullpunkt.
 
-Wenn zusätzlich eine Mittlwertsstruktur geschätzt wird, müssen wir ebenfalls die 
-Mittelwerte beobachteter und latenter Variablen frei Schätzen.
+Wenn zusätzlich eine Mittlwertsstruktur geschätzt wird, müssen wir
+ebenfalls die Mittelwerte beobachteter und latenter Variablen frei
+Schätzen.
 
 ### How can one get the parameter estimates from a fitted lavaan object if one is not interested in a tidy output?
 
-With: 
+With:
+
 ```{r}
 # parameterEstimates(fitted_model)
 ```
 
 This will return a dataframe with all estimated parameters of the model.
 
+### Wenn wir in Lavaan Labels vergeben, warum labeln wir die ersten Indikatoren nicht?
 
-### Wenn wir in Lavaan Labels vergeben, warum labeln wir die ersten Indikatoren nicht?   
-
-Weil die Ladungen dieser Indikattoren auf 1 festgelegt sind.
+Weil die Ladungen dieser Indikattoren auf 1 festgelegt sind. Das ist
+Lavaans default der code funktion.
 
 ### Welche Teile können in Strukturgleichungsmodellen generell unterschieden werden?
 
-Ein "Messmodell" und ein Strukturmodell.  
-Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein Strukturmodell
-ist hingegen auf die gerichteten Zusammenhänge zwischen latenten Konsturkuten ausgerichtet, 
-die durch Messmodelle beschrieben werden.
+Ein "Messmodell" und ein Strukturmodell.\
+Das Messmodell ist dabei meist auf Indikatoren ausgerichtet. Ein
+Strukturmodell ist hingegen auf die gerichteten Zusammenhänge zwischen
+latenten Konsturkuten ausgerichtet, die durch Messmodelle beschrieben
+werden.
 
+### Was sind drei Gefahren bei der Verwendung von SEM?
 
-### Was sind drei Gefahren bei der Verwendung von SEM?  
-
-- Übergeneralisierung der Ergebnisse (von der  *jetzigen* *lokalen* zu einer *globalen und zeitlich kontinuierlichen* Population ). 
--  bei Ergebnisdarstellung in Modellform häufiger Fehlschluss, dass die an einer Stichprobe gewonnenen Ergebnisse für die Population gültig sind ▪ Confirmation Bias ▪ bei gutem Modellfit häufig Vernachlässigung von möglicherweise besseren Alternativmodellen 
-- Unzulässige Kausalinterpretation gerichteter Pfade: häufige – jedoch falsche – Annahme, die Kausalität gerichteter Pfade werde generell durch Strukturgleichungsmodelle bestätigt 
+- Übergeneralisierung der Ergebnisse (von der *jetzigen* *lokalen* zu
+  einer *globalen und zeitlich kontinuierlichen* Population ).
+- bei Ergebnisdarstellung in Modellform häufiger Fehlschluss, dass die
+  an einer Stichprobe gewonnenen Ergebnisse für die Population gültig
+  sind ▪ Confirmation Bias ▪ bei gutem Modellfit häufig Vernachlässigung
+  von möglicherweise besseren Alternativmodellen
+- Unzulässige Kausalinterpretation gerichteter Pfade: häufige – jedoch
+  falsche – Annahme, die Kausalität gerichteter Pfade werde generell
+  durch Strukturgleichungsmodelle bestätigt
 
 ```{r}
 # everything is regressions
@@ -153,16 +174,17 @@ syntax <- ""
 
 ### Wie können wir im Rahmen von SEM komplexitätsreduzierende Massnahmen vornehmen?
 
-Wir können Parameter Fixieren, einschränken (idr. equality constraints einführen). 
-Wenn wir Parameter frei schätzen, findet keine Komplexitätsreduktion statt.
+Wir können Parameter Fixieren, einschränken (idr. equality constraints
+einführen). Wenn wir Parameter frei schätzen, findet keine
+Komplexitätsreduktion statt.
 
 ### Please describe the way in which the output of measurement objects given by summary can be analyzed
 
-Bei intercepts: 
-Variablen mit Punkt davor = intercepts, sonst mittlwerte.
+Bei intercepts: Variablen mit Punkt davor = intercepts, sonst
+mittlwerte.
 
-Bei Varianzen:
-Mit Punkt Davor = residuals. Ohne Punkt davor = Varianzen.
+Bei Varianzen: Mit Punkt Davor = residuals. Ohne Punkt davor =
+Varianzen.
 
 (basically, das Zeugs aus einer Regression ist mit Punkten)
 
@@ -170,15 +192,9 @@ Mit Punkt Davor = residuals. Ohne Punkt davor = Varianzen.
 
 ```{r}
 rm(list = ls())
-library(readxl)
-library(lavaan)
-library(semTools)
 ```
 
-
-
-### Erstelle ein Messmodell mit calling t1. Welche Funktion verwenden sie dazu, warum? Zudem: Füge dem Modell Residualkorrelationen hinzu 
-
+### Erstelle ein Messmodell mit calling t1. Welche Funktion verwenden sie dazu, warum? Zudem: Füge dem Modell Residualkorrelationen hinzu
 
 ```{r}
 data <- read_xlsx("./data/dallarosa.xlsx")
@@ -239,34 +255,57 @@ lavaan::summary(fit2, standardized = T)
 
 ```
 
-
 # Missing data
 
 ## Theoretische Übungen
 
+### Was sind Gründe für Missing Data?
+
+- Person gibt absichtlich keine Antwort auf bestimmte Arten von Fragen
+  (MNAR).
+
+- Person mit hoher Unsicherheits Intoleranz gibt keine Antwort auf
+  Fragen.
+
+- Person gibt keine Antwort auf bestimmte Arten von Fragen, weil der
+  Computer zufällig abstürzt. (MCAR).
+
+- Person gibt keine Antwort auf ein Item, das mit einem Video zusammen
+  präsentiert wird. Nur Personen mit einem älteren Computer haben das
+  Problem (MNAR).
+
 ### Welche unterschiedlichen Arten von Missing Data kennen wir? Gib jeweils ein Beispiel
 
-MAR (missing at random): Ob ein Wert fehlt ist unabhängig vom wahren Wert der eigenen Variable, wenn für andere Variablen im Datensatz kontrolliert wurde.
-MCAR (missing completely at random): Fehlende Werte unabhängig von Werten im Datensatz (Wahre Werte und nicht wahre Werte)
-MNAR (missing not at random): missing data are dependent upon the true values on the variable itself > fex. the higher the temperature, the higher 
+MAR (missing at random): Ob ein Wert fehlt ist unabhängig vom wahren
+Wert der eigenen Variable, wenn für andere Variablen im Datensatz
+kontrolliert wurde. MCAR (missing completely at random): Fehlende Werte
+unabhängig von Werten im Datensatz (Wahre Werte und nicht wahre Werte)
+MNAR (missing not at random): missing data are dependent upon the true
+values on the variable itself \> fex. the higher the temperature, the
+higher
 
-### Was sind einige Probleme von listwise deletion? 
+### Was sind einige Probleme von listwise deletion?
 
-Wenn daten MCAR sind zwar okay, aber nur wenn nicht mehr als 2% der Fälle gelöscht werden.
-Problem: Es kann oft dazu kommen, dass mehr Daten gelöscht werden wenn viel Variablen im Datensatz sind.
+Wenn daten MCAR sind zwar okay, aber nur wenn nicht mehr als 2% der
+Fälle gelöscht werden. Problem: Es kann oft dazu kommen, dass mehr Daten
+gelöscht werden wenn viel Variablen im Datensatz sind. Zudem kann der
+Schätzer gebiased werden. wenn Daten MAR sind \> Wir werden systematisch
+Daten von der Confounder Variable löschen.
 
 ### Was sollte anstelle von listwise deletion gemacht werden?
 
-Mulitple Imputation oder Full information Maximum Likelihood.
-Full Information Maximum Likelihood schätzt die Modellparameter unter berücksichtigung der Missingness "on the fly", während multiple imputation die vermissten Daten direkt schätzt. 
-Im Seminar verwenden FIML.
-
+Mulitple Imputation oder Full information Maximum Likelihood. Full
+Information Maximum Likelihood schätzt die Modellparameter unter
+berücksichtigung der Missingness "on the fly", während multiple
+imputation die vermissten Daten direkt schätzt. Im Seminar verwenden
+FIML.
 
 ### wie sind latente Variablen in Messmodellen verbunden?
 
-Sie korrelieren oder sind nicht verbunden. 
-**Wichtig ist:** per default korrelieren Konstrukte. Wenn sie nicht korrelieren, dann bedeutet das, 
-dass wir die Daten einschränken. Wenn wir sie korrelieren lassen, schränken wir die (neu geschätzten) Daten nicht ein.
+Sie korrelieren oder sind nicht verbunden. **Wichtig ist:** per default
+korrelieren Konstrukte. Wenn sie nicht korrelieren, dann bedeutet das,
+dass wir die Daten einschränken. Wenn wir sie korrelieren lassen,
+schränken wir die (neu geschätzten) Daten nicht ein.
 
 ## Exercises
 
@@ -286,11 +325,14 @@ data_mcar <- missMethods::delete_MCAR(data, 0.3, cols_mis = "cubes")
 
 ### Why should we prefeer FIML over listiwse deletion?
 
-Listwise can be problemetaic bc. we loose lots of information (Only if 2% of vars affected ok). 
-Listwise biases our estimation if data is not MCAR. 
+Listwise can be problemetaic bc. we loose lots of information (Only if
+2% of vars affected ok). Listwise biases our estimation if data is not
+MCAR.
 
-Bei FIML deletion ist zudem (egal welche Variablen aus dem Datensatz gebraucht werden) der 
-Datensatz immer der selbe. Bei listwise deletion werden je nach Datensatz (und Variablen die wir analysiseren) unterschiedlich viele Variablen aus dem Datensatz gelöscht.
+Bei FIML deletion ist zudem (egal welche Variablen aus dem Datensatz
+gebraucht werden) der Datensatz immer der selbe. Bei listwise deletion
+werden je nach Datensatz (und Variablen die wir analysiseren)
+unterschiedlich viele Variablen aus dem Datensatz gelöscht.
 
 # Modellevalation
 
@@ -298,68 +340,67 @@ Datensatz immer der selbe. Bei listwise deletion werden je nach Datensatz (und V
 
 ### Was ist ein Problem bei der Verwendung des Chisquared tests zur Modellevaluation?
 
-Durch SEM testen wir theoretische Modelle. Theoretische Modelle vereinfachen die Realität.
-Der Chisquared Test testet gegen Abweichung von der Realität, ohne die Parsimonität (die wir ja wollen) 
-eines Modelles zu berücksichtigen. Bei ausreichender Power wird er ein Modell deshalb immer ablehnen.
-Wir wollen aber nicht alleine einen Test für Power, sondern ebenfalls einen Test der unsere
-Parsimonität mit ins Modell aufnimmt.
+Durch SEM testen wir theoretische Modelle. Theoretische Modelle
+vereinfachen die Realität. Der Chisquared Test testet gegen Abweichung
+von der Realität, ohne die Parsimonität (die wir ja wollen) eines
+Modelles zu berücksichtigen. Bei ausreichender Power wird er ein Modell
+deshalb immer ablehnen. Wir wollen aber nicht alleine einen Test für
+Power, sondern ebenfalls einen Test der unsere Parsimonität mit ins
+Modell aufnimmt.
 
-Der Signifikanztest des Chisquared tests Sollte deshalb nicht beachtet werden.
-
+Der Signifikanztest des Chisquared tests Sollte deshalb nicht beachtet
+werden.
 
 ### Welche anderen fit Indizes sind vorhanden?
 
-
 #### RMSEA
 
-Werte können zwischen 0 und 1 liegen. 
-Konfidenzintervall bekannt. Sollte unter 0.06 liegen (nicht wie in output)
+Werte können zwischen 0 und 1 liegen. Konfidenzintervall bekannt. Sollte
+unter 0.06 liegen (nicht wie in output)
 
-#### CFI 
+#### CFI
 
 Sollte über 0.95 liegen (Hu und Bentler), teils auch 0.9 akzeptabel
 
-#### TLI/NNFI 
+#### TLI/NNFI
 
 same wie CFi
 
-#### SRMR 
+#### SRMR
 
 SRMR sollte unter 0.08 liegen.
 
-
 ### Welche Werte können bei Modellvergleichen herangezogen werden?
 
-#### Chisq diff 
+#### Chisq diff
 
-chisquared verteilt. 
-Auch hier haben wir das Problem der Stichprobenabhängigkeit
+chisquared verteilt. Auch hier haben wir das Problem der
+Stichprobenabhängigkeit
 
 #### d cfi
 
-Sollte unter 0.01 liegen. > Dann wird das Sparsamere Modell gewählt.
+Sollte unter 0.01 liegen. \> Dann wird das Sparsamere Modell gewählt.
 Kein Signifikanztest möglich.
 
 #### AIC, BIC
 
-Niedrigere Werte besser, 
-Berücksichtigen Parsimonität. 
-Es ist aber kein Signifikanztest möglich.
+Niedrigere Werte besser, Berücksichtigen Parsimonität. Es ist aber kein
+Signifikanztest möglich.
 
 #### Problem mit reinem rmsea vergleich?
 
-Kann bedeutsame Fit unterschiede dann maskieren, wenn beide Modelle bereits 
-hohe unterschiede im Fit aufweisen.
+Kann bedeutsame Fit unterschiede dann maskieren, wenn beide Modelle
+bereits hohe unterschiede im Fit aufweisen.
 
 #### rmsead
 
-Differenz der Freiheitsgrade und Differenz der Modelle gehen in das Modell ein.
-Je grösser Freiheitsgrade der Modelle, desto kleiner der Wert. 
-Desto grösser die Differenz/ Abweichung der Modelle, desto grösser der Wert.
+Differenz der Freiheitsgrade und Differenz der Modelle gehen in das
+Modell ein. Je grösser Freiheitsgrade der Modelle, desto kleiner der
+Wert. Desto grösser die Differenz/ Abweichung der Modelle, desto grösser
+der Wert.
 
-Cutoff 0.08 oder 0.1 > Hier 0.08
-Nice ist: Es kann ein Konfidenzintervall Berechnet werden.
-
+Cutoff 0.08 oder 0.1 \> Hier 0.08 Nice ist: Es kann ein
+Konfidenzintervall Berechnet werden.
 
 ## Exercises
 
@@ -413,23 +454,23 @@ model4x.1 <- '
 
 ### Wie ist der Modellfit einzuschätzen?- Repetiere dabei alle fit indizes
 
-
 ```{r}
 fit4x.1 <- lavaan::sem(model = model4x.1, data = data, missing = "ml")
 summary(fit4x.1, fit.measures = T)
 
 
 ```
-It is important to keep in mind that: 
-srmr = 0.08 und rmsea = 0.06 als cutoff. 
-auch zielmich wichtig: um den RMSEA kann ein Konfidenzintervall 
-gezogen werdne. 
 
-### REHEARSE: Gleichsetzung der Ladungen der Indikatoren in model4x.1 
+It is important to keep in mind that: srmr = 0.08 und rmsea = 0.06 als
+cutoff. auch zielmich wichtig: um den RMSEA kann ein Konfidenzintervall
+gezogen werdne.
 
-Hier besonders wichtig, dass Über, die Messzeitpunkte bedeutet, dass die Ladungen
-innerhalb eines Items über die Messzeitpunkte gleich bleiben. Zudem sollten die 
-Ladungen bei einem Item nicht gleichgesetzt werden?
+### REHEARSE: Gleichsetzung der Ladungen der Indikatoren in model4x.1
+
+Hier besonders wichtig, dass Über, die Messzeitpunkte bedeutet, dass die
+Ladungen innerhalb eines Items über die Messzeitpunkte gleich bleiben.
+Zudem sollten die Ladungen bei einem Item nicht gleichgesetzt werden?
+
 ```{r}
 model4x.2 <- '
   # measurement model
@@ -481,8 +522,10 @@ summary(semTools::compareFit(fit4x.1, fit4x.2))
 # rmsead 
 lavaan::fitmeasures(fit4x.2, "rmsea", h1.model = fit4x.1 ) # weniger restriktives modell ist h1
 ```
-Cfi von unter 0.01 sowie ein tieferer AIC oder BIC zeigen einen besseren Modellfit an.
-smaller aic and smaller bic, kein signifikanter chisq test.
+
+Cfi von unter 0.01 sowie ein tieferer AIC oder BIC zeigen einen besseren
+Modellfit an. smaller aic and smaller bic, kein signifikanter chisq
+test.
 
 rmsead sollte unter 0.08 liegen kommen. Hier der fall mit 0.014
 
@@ -540,11 +583,9 @@ lavaan::fitmeasures(fit4x.3, "rmsea", h1.model = fit4x.2)
 
 ### Den generellen Modellfit bewerten
 
-
 ```{r}
 summary(fit4x.3, standardized = T, fit.measures = T)
 ```
-
 
 # Messmodell
 
@@ -552,24 +593,24 @@ summary(fit4x.3, standardized = T, fit.measures = T)
 
 ### Was sollte in Messmodellen sichergestellt werden?
 
-Diskriminante und Konvergente Validität (Indikatoren auf dem gleichen Konstrukt sollten korrelieren, Indikatoren
-auf verschiedenen Konstrukten sollten nicht korrelieren.)
+Diskriminante und Konvergente Validität (Indikatoren auf dem gleichen
+Konstrukt sollten korrelieren, Indikatoren auf verschiedenen Konstrukten
+sollten nicht korrelieren.)
 
 ### Was kann neben korrelationen zwischen Faktoren noch Modelliert werden?
 
-Korrelationen zwischen Residuen, Korrelationen zwischen Faktoren zweiter Ordnung.
-Korrelationen zwischen residuen können insbesondere Sinnvoll sein, weil sie 
-Methodenfaktoren darstellen können.
+Korrelationen zwischen Residuen, Korrelationen zwischen Faktoren zweiter
+Ordnung. Korrelationen zwischen residuen können insbesondere Sinnvoll
+sein, weil sie Methodenfaktoren darstellen können.
 
+### Was sind die zwei Bedingungen, für die Indentifizierbarkeit von Modellen?
 
-### Was sind die zwei Bedingungen, für die Indentifizierbarkeit von Modellen? 
+1.  Jede latente Variable muss eine Skala haben \> Ladung des ersten
+    Indikators auf eins setzen oder varianz der latenten Variablen auf 1
+    festlegen (nicht möglich bei endogenen variablen).
 
-1. Jede latente Variable muss eine Skala haben > Ladung des ersten Indikators
-auf eins setzen oder varianz der latenten Variablen auf 1 festlegen (nicht möglich bei endogenen variablen).
-
-
-2. Zahl der beobachteten Variablen muss mindestens so gross sein wie 
-Zahl der zu schätzenden Variablen.
+2.  Zahl der beobachteten Variablen muss mindestens so gross sein wie
+    Zahl der zu schätzenden Variablen.
 
 ```{r}
 #| label: eda
@@ -578,39 +619,37 @@ Zahl der zu schätzenden Variablen.
 #   geom_histogram()
 ```
 
-
 ### Was sind Vorteile, was Nachteile von Parceling? Wann sollte Parcellig ev. besser nicht verwendet werden?
 
-Vorteile sind: 
-Höhere Reliabilität, Höhere Kommunalität (Geteilte Varianz Parcels mit dem Konstrukt), Weniger Verletzungen der Normalverteilungsannahme.
+Vorteile sind: Höhere Reliabilität, Höhere Kommunalität (Geteilte
+Varianz Parcels mit dem Konstrukt), Weniger Verletzungen der
+Normalverteilungsannahme.
 
-
-Nachteile sind: 
-Insbesondere im Falle von psychometrischer Validierung ein Verlust über die Informationen zu einzelnen Items. 
-- Keine Itemspezifischen Infos
-- Multidimensionalität von Konstrukten kann verschleiert werden.
-
+Nachteile sind: Insbesondere im Falle von psychometrischer Validierung
+ein Verlust über die Informationen zu einzelnen Items. - Keine
+Itemspezifischen Infos - Multidimensionalität von Konstrukten kann
+verschleiert werden.
 
 ### Wie sollte nach der VL beim Parcelling vorgegangen werden?
 
-1. 3 parcels pro konstrukt (parcelling methode, zb. Zufall theoretisch ebegründen) 
-2. Items müssen auf gleicher skala sein, ansonsten normalisieren.
+1.  3 parcels pro konstrukt (parcelling methode, zb. Zufall theoretisch
+    ebegründen)
+2.  Items müssen auf gleicher skala sein, ansonsten normalisieren.
 
 ### Was ist die two step Strategie nach Kline (2005)?
 
-Test des Gesamtmodells ohne kausale Pfade zwischen den Konstrukten, aber mit sämtlichen möglichen Korrelationen zwischen den Konstrukten.
--> Gesammter Missfit ist auf das Messmodell zurückzuführen.
-
-
+Test des Gesamtmodells ohne kausale Pfade zwischen den Konstrukten, aber
+mit sämtlichen möglichen Korrelationen zwischen den Konstrukten. -\>
+Gesammter Missfit ist auf das Messmodell zurückzuführen.
 
 ```{r}
 
 ```
 
-
 # Messmodelle
 
 ## Theoretische Übungen
+
 tbd.
 
 ## Exercises
@@ -622,10 +661,10 @@ data <- readxl::read_xlsx("./data/dallarosa.xlsx")
 
 ### REHEARSE: Was muss beachtet werden, wenn die dfs von Modellen mit mehreren Messzeitpunkten geschätzt werden?
 
-Immer auch residualkorrelationen mit einberechen. Zudem nicht vergessen, die korrelationen zwischen Variablen mit ins Modell zu nehmen.
+Immer auch residualkorrelationen mit einberechen. Zudem nicht vergessen,
+die korrelationen zwischen Variablen mit ins Modell zu nehmen.
 
-
-### REHEARSE: Erstellen eines REINEN Messmodells > Was gehört im Rahmen der Rerstriktion bereits in die Definition eines Messmodells?
+### REHEARSE: Erstellen eines REINEN Messmodells \> Was gehört im Rahmen der Rerstriktion bereits in die Definition eines Messmodells?
 
 ```{r}
 # View(data)
@@ -660,12 +699,12 @@ copi2d ~~ copi3d
 
 ```
 
-
 ### REHEARSE: Modelling the structural part of the measurement model: what has to be included additionally?
 
-It is important not not forget to include the modelling of the covariances of latent constructs. 
-When estimating the model with cfa(), this may be done automatically, but sem() does not include this 
-as part of the model definition.
+It is important not not forget to include the modelling of the
+covariances of latent constructs. When estimating the model with cfa(),
+this may be done automatically, but sem() does not include this as part
+of the model definition.
 
 ```{r}
 model5x.2 <- "
@@ -725,20 +764,19 @@ fit5.2 <- sem(model = model5x.2, data = data, missing = "ML")
 ```
 
 And also comparing the fit of the two models:
+
 ```{r}
 
 summary(compareFit(fit5.1, fit5.2))
 lavaan::fitmeasures(fit5.2, "rmsea", h1.model = fit5.1)
 ```
-aic und bic sind grösser, chisq sign, aber wir sehen kein bedeutsame (über 0.01)
-Differenz eim cfi. 
-Der rmsead ist aber weit grösser als 0.08. Ich richte mich an diesen Cutoff 
-und würde folglich das Modell ablehnen.
 
+aic und bic sind grösser, chisq sign, aber wir sehen kein bedeutsame
+(über 0.01) Differenz eim cfi. Der rmsead ist aber weit grösser als
+0.08. Ich richte mich an diesen Cutoff und würde folglich das Modell
+ablehnen.
 
-
-
-# Multigruppenanalyse 
+# Multigruppenanalyse
 
 ## Theoretische Übungen
 
@@ -747,7 +785,8 @@ und würde folglich das Modell ablehnen.
 - intercepts: the intercepts of the observed variables
 - means: the intercepts/means of the latent variables
 - residuals: the residual variances of the observed variables
-- residual.covariances: the residual covariances of the observed variables
+- residual.covariances: the residual covariances of the observed
+  variables
 - lv.variances: the (residual) variances of the latent variables
 - lv.covariances: the (residual) covariances of the latent variables
 - regressions: all regression coefficients in the model
@@ -867,12 +906,13 @@ copi3 ~ c(i1,i2)*copi2
 
 ```
 
-
 ### Creating a model where the cross lagged effects as well as the stabilites are equal accross groups:
 
-In effect we have multiple different possibilities for solving this problem.
+In effect we have multiple different possibilities for solving this
+problem.
 
 #### With simply specifying the parameters as equal and fitting the model:
+
 ```{r}
 model6x.3.1 <- "
 # factor loadings and indicators
@@ -921,7 +961,7 @@ copi3 ~ i*copi2
 "
 ```
 
-#### With the group equal argument: 
+#### With the group equal argument:
 
 ```{r}
 model6x.3.2 <- "
@@ -1030,8 +1070,7 @@ i1 == i1
 "
 ```
 
-Fitting all these different models: 
-
+Fitting all these different models:
 
 ```{r}
 # only setting the group argument:
@@ -1054,35 +1093,35 @@ summary(fit6x.3.3)
 
 ### Wofür können mediationsanalysyen genutzt werden? Warum sind sie nützlich?
 
-Testen von theoretischen kausalen Modellen. Unter in der Psychotherapie Forschung ist die 
-Unterbrechung von Kausalketten von grossem Interesse.
+Testen von theoretischen kausalen Modellen. Unter in der Psychotherapie
+Forschung ist die Unterbrechung von Kausalketten von grossem Interesse.
 
 ### Warum sind bei Mediationsmodelle Latente Variablen idr. Manifesten variablen zu bevorzugen?
 
-Mediationsanalyse kann theoretisch auch direkt mit manifesten Variablen durchgeführt werden.
-Ein Problem ist dabei, dass bei geringer reliabilität der Indirekte Pfad unterschätzt wird.
+Mediationsanalyse kann theoretisch auch direkt mit manifesten Variablen
+durchgeführt werden. Ein Problem ist dabei, dass bei geringer
+reliabilität der Indirekte Pfad unterschätzt wird.
 
 ### Beschreibe das Vorgehen bei Mediationsanalysen nach Baron und Kenny. Was sind Probleme bei der Vorgehensweise?
 
-1. ist c signifikant? 
-2. ist a signifikant?
-3. ist b signifikant? 
-4. ist ab signifikant?
-Wenn ab signiikant und c' nicht mehr, vollständige mediation
+1.  ist c signifikant?
+2.  ist a signifikant?
+3.  ist b signifikant?
+4.  ist ab signifikant? Wenn ab signiikant und c' nicht mehr,
+    vollständige mediation
 
-Probleme:
-- Da dreimal getestet wird, kann h0 dreimal beibehalten werden > Wenn eine Mediationshypothese
-in der Theorie wahr ist, muss sie sich nicht dadurch zeigen, dass alle drei Effekte signifkant sind.
-- Signifikanz von c nicht sinnvoll, weil es auch möglich ist, dass ein Mediationseffekt 
-eine signifikante Moderation verdeckt.
-
+Probleme: - Da dreimal getestet wird, kann h0 dreimal beibehalten werden
+\> Wenn eine Mediationshypothese in der Theorie wahr ist, muss sie sich
+nicht dadurch zeigen, dass alle drei Effekte signifkant sind. -
+Signifikanz von c nicht sinnvoll, weil es auch möglich ist, dass ein
+Mediationseffekt eine signifikante Moderation verdeckt.
 
 Weil Messfehler in laten
 
 ### Beschreibe den Sobel Test und Probleme mit dem Sobel Test
 
-Der Sobel test schätzt Mediation basierend auf der Formel von Sobel, ohne 
-dass Mediation etc. berücksichtigt wird.
+Der Sobel test schätzt Mediation basierend auf der Formel von Sobel,
+ohne dass Mediation etc. berücksichtigt wird.
 
 ```{r}
 example <- "
@@ -1096,20 +1135,20 @@ total := cp+(a*b)
 "
 ```
 
-Ein Problem des Tests ist die Annahme der Normalverteilung, (die für den Test nötig
-wäre) nicht gegeben ist. > Power des Tests wird uU. unterschätzt. Das kann zu falschen
-Schlussfolgerungen führen.
+Ein Problem des Tests ist die Annahme der Normalverteilung, (die für den
+Test nötig wäre) nicht gegeben ist. \> Power des Tests wird uU.
+unterschätzt. Das kann zu falschen Schlussfolgerungen führen.
 
 ### Beschreibe Bootstrapping als Lösung für das Problem mit dem Sobel Test.
 
-Generelle Idee von Bootstrapping: 
- Es **müssen** Daten auf Individual/Falleben vorliegen. 
- Von diesen Daten wird dann widerholt ein Zufallssample (mit zurücklegen gezogen)
+Generelle Idee von Bootstrapping: Es **müssen** Daten auf
+Individual/Falleben vorliegen. Von diesen Daten wird dann widerholt ein
+Zufallssample (mit zurücklegen gezogen)
 
-### REHEARSE: Wie wird bootstrapping nach Strout und Bolger angewendet für die Berechunung eines Konfidenzintervalls? 
+### REHEARSE: Wie wird bootstrapping nach Strout und Bolger angewendet für die Berechunung eines Konfidenzintervalls?
 
-Zuerst müssen wir in Lavaan angeben, dass wir die se's mittels bootstrap schätzen.
-Danach müssen wir uns die cis selber ausgeben lassen:
+Zuerst müssen wir in Lavaan angeben, dass wir die se's mittels bootstrap
+schätzen. Danach müssen wir uns die cis selber ausgeben lassen:
 
 ```{r}
 # fit <- lavaan(data, model, se = "bootstrap", bootstrap = 1000) 
@@ -1118,17 +1157,21 @@ Danach müssen wir uns die cis selber ausgeben lassen:
 
 ### REHEARSE: Wie sollten Mediationseffekte interpretiert werden? Wann kann von vollständiger, wann partieller Mediation gesprochen werden?
 
-Auch wenn c' nichtsignifikant ist, kann in vielen Fällen nicht geschlossen werden, dass vollständige Mediation besteht ▪ Effektstärke von c' beachten ▪ Nur wenn c' sehr klein ist (und viel kleiner als der indirekte Effekt a × b), ist ein Schluss auf vollständige Mediation sinnvoll
+Auch wenn c' nichtsignifikant ist, kann in vielen Fällen nicht
+geschlossen werden, dass vollständige Mediation besteht ▪ Effektstärke
+von c' beachten ▪ Nur wenn c' sehr klein ist (und viel kleiner als der
+indirekte Effekt a × b), ist ein Schluss auf vollständige Mediation
+sinnvoll
 
-Effektstärken des Indirekten Effektes können auch als Effekt im Verhältnis zum direkten Effekt ausgedrückt werden. 
-Aber nur sinnvoll, wenn beide Effekte das gleiche Vorzeichen haben.
+Effektstärken des Indirekten Effektes können auch als Effekt im
+Verhältnis zum direkten Effekt ausgedrückt werden. Aber nur sinnvoll,
+wenn beide Effekte das gleiche Vorzeichen haben.
 
 ## Exercises
 
 ```{r}
 rm(list = ls())
 ```
-
 
 ```{r}
 data <- read_xlsx("./data/dallarosa.xlsx")
@@ -1158,9 +1201,10 @@ summary(fit7x.1, standardized = TRUE, fit.measures = TRUE)
 
 ```
 
-Nach sobel wäre das ein signifikantes ergebnis. Aber wir wissen, dass der 
-Signifikanz Test verzerrt ist (bzw. zu schnell ein negatives Ergebnis angibt).
-dh. schätzen wir das Modell erneut, jetzt aber mit bootstrap:
+Nach sobel wäre das ein signifikantes ergebnis. Aber wir wissen, dass
+der Signifikanz Test verzerrt ist (bzw. zu schnell ein negatives
+Ergebnis angibt). dh. schätzen wir das Modell erneut, jetzt aber mit
+bootstrap:
 
 ```{r}
 fit7x.2 <- lavaan::sem(model = model7x.1, data = data, se = "bootstrap", bootstrap = 1000) 
@@ -1168,49 +1212,50 @@ fit7x.2 <- lavaan::sem(model = model7x.1, data = data, se = "bootstrap", bootstr
 lavaan::parameterEstimates(fit7x.2, ci = 0.95 , boot.ci.type = "bca.simple", standardized = TRUE, output = "text" )
 ```
 
-
 # Cross Lagged Panel model
 
 ## Theoretische Übungen
 
 ### Was ist nötig um Kausalität zu erschliessen?
 
-Entweder randomisierung, oder, wenn Randomisierung nicht möglich,
-- Ein Effekt von x auf y (muss vorhanden sein, oft aber nur theoretisch angenommen)
-- x muss y zeitlich vorausgehen
-- Effekt sollte bei Modellierung bestehen bleiben, auch wenn relevante drittvariablen Kontrolliert werden.
-  - dh. Kontrolle stabilier und konfundierter Drittvariablen
-  - können uU. auch nicht linear sein.
-- KONTROLLE DES AUTOREGRESSORS
+Entweder randomisierung, oder, wenn Randomisierung nicht möglich, - Ein
+Effekt von x auf y (muss vorhanden sein, oft aber nur theoretisch
+angenommen) - x muss y zeitlich vorausgehen - Effekt sollte bei
+Modellierung bestehen bleiben, auch wenn relevante drittvariablen
+Kontrolliert werden. - dh. Kontrolle stabilier und konfundierter
+Drittvariablen - können uU. auch nicht linear sein. - KONTROLLE DES
+AUTOREGRESSORS
 
 ### Warum ist die Kontrolle des Autoregressors relevant?
 
-Wenn Konstrukte y und x bereits zu t1 hoch korrleieren kommt Effekt von y1 auf x2 
-nicht aufgrund von kausalem effekt, sondern aufgrund von zsh von y1 und x1 zustande.
-
+Wenn Konstrukte y und x bereits zu t1 hoch korrleieren kommt Effekt von
+y1 auf x2 nicht aufgrund von kausalem effekt, sondern aufgrund von zsh
+von y1 und x1 zustande.
 
 Interpret the results, discuss limitations, and relate the findings to
 existing literature.
 
-### Was ist der Unterschied zwischen RI-CLP modellen und DP Modellen?  
+### Was ist der Unterschied zwischen RI-CLP modellen und DP Modellen?
 
-Ri-clp Modelle sind sparsamer (wenn Modelle genestet im Falle von Gleichsetzung.)
+Ri-clp Modelle sind sparsamer (wenn Modelle genestet im Falle von
+Gleichsetzung.)
 
-unit effects im dlp versuchen Effekte stabiler drittvariablen heraus zu partialisieren.
-sogenannte unobserved time invariant confounders.
+unit effects im dlp versuchen Effekte stabiler drittvariablen heraus zu
+partialisieren. sogenannte unobserved time invariant confounders.
 
-Gleich ist, dass beide Modelle versuchen, stabile- zwischen Personen Varianz heerauszu
-partialisieren.
+Gleich ist, dass beide Modelle versuchen, stabile- zwischen Personen
+Varianz heerauszu partialisieren.
 
-ri-clpm ist dem dlm vorzuziehen, wenn annahmen (stationarität und equilibrium) gerechtfertigt sind
-Das ist nicht der Fall bei: Kinder/Jugendlichen sowie Grossen Lebensereignissen über 
-die Untersduchungsperiode hinweg.
+ri-clpm ist dem dlm vorzuziehen, wenn annahmen (stationarität und
+equilibrium) gerechtfertigt sind Das ist nicht der Fall bei:
+Kinder/Jugendlichen sowie Grossen Lebensereignissen über die
+Untersduchungsperiode hinweg.
 
 ## Exercises
 
 ### Interpretieren der Effekte in einem cross lagegd panel model
 
-Wichtig ist es, die standardisierten Werte zu vergleichen. 
+Wichtig ist es, die standardisierten Werte zu vergleichen.
 
 ```{r}
 model9x.1 <- "
@@ -1263,17 +1308,16 @@ fit9x.1 <- lavaan::sem(model = model9x.1, data = data, missing = "ML")
 summary(fit9x.1)
 
 ```
-Von Orth et al. (2024)
-Based on the present findings, we propose the following guide-
-lines for interpreting the size of cross-lagged effects. We suggest
-that .03 indicates a small effect, .07 a medium effect, and .12 a large
-effect.
 
+Von Orth et al. (2024) Based on the present findings, we propose the
+following guide- lines for interpreting the size of cross-lagged
+effects. We suggest that .03 indicates a small effect, .07 a medium
+effect, and .12 a large effect.
 
 ### Modifikation eines CLP zu einem DPM modell
 
-Code von Oben nehmen. 
-Wir brauchen die Unit effects sowie die covariances der Unit effects.
+Code von Oben nehmen. Wir brauchen die Unit effects sowie die
+covariances der Unit effects.
 
 ```{r}
 
@@ -1423,7 +1467,6 @@ co ~~ 0*calr1
 fit9x.3 <- lavaan::sem(model = model9x.3, data = data, missing = "ML")
 ```
 
-
 ### REHEASE: compare the three models
 
 ```{r}
@@ -1432,8 +1475,11 @@ fitmeasures(fit9x.1, "rmsea", h1.model= fit9x.2)
 fitmeasures(fit9x.3, "rmsea", h1.model= fit9x.2)
 fitmeasures(fit9x.1, "rmsea", h1.model= fit9x.3)
 ```
-WICHTIG: das modell mit den meisten dfs (das restriktivste/ strengste) ist hier das traditionelle clpm, danach ds ri-clp und dann das dpm.
-ri-clpm hat mehr dfs, weil keine korrelationen mit ris und residuals der ersten Messwelle zugelassen werden.
+
+WICHTIG: das modell mit den meisten dfs (das restriktivste/ strengste)
+ist hier das traditionelle clpm, danach ds ri-clp und dann das dpm.
+ri-clpm hat mehr dfs, weil keine korrelationen mit ris und residuals der
+ersten Messwelle zugelassen werden.
 
 ### Aufstellen eines cross lagged panel models basierend auf einem Ausgangsmodell
 
@@ -1442,6 +1488,7 @@ data_yp <- read_xlsx("./data/YP.xlsx")
 ```
 
 Das Ausgangsmodell:
+
 ```{r}
 model8.3 <- '
   # measurement model
@@ -1494,9 +1541,8 @@ model8.3 <- '
 '
 ```
 
-
 ### Erstellen eines DPM
- 
+
 ```{r}
 model8.4 <- '
   # measurement model
@@ -1623,34 +1669,69 @@ model8.5 <- '
 '
 ```
 
-
 # Wachstumskurven Modelle
 
 ## Theoretische Übungen
 
+### Was ist ein Vorteil von Wachstumskurven Modellen im Vergleich zu "traditionellen" regressions Methoden?
+
+Bei traditionellen Methoden wird der Varianz der Parameter wenig
+rechnung getragen. In Wachstumskurven Modellen wird Variation zwischen
+Individuen systematisch variiert. Die Verteilung der Modellparameter
+(zB. Slope, Intercept) werden nicht als zufälligen Messfehler
+modelliert, sondern als zugrundeliegende Attribute der "echten
+Verteilung".
+
+Das coole daran: Wir erhalten einerseits einen Schätzwert für die
+Varianz der Parameter und können andererseits diese Varianz und
+Covarianz mit anderen Parametern parametern (zB. katagoriales gender)
+korrelieren lassen.
+
+### Wie viele Parameter werden in einem latent growth curve model mit linearem trend über 4 messzeitpunkte geschätzt?
+
+2\* intercepts (von Slope und Intercept) + 2\* variance (von slope und
+intercept) + 1 \* covariance between slope and intercept + 4\* residual
+variance at **each** timepoint.
+
+= 9 Parameter.
+
+### Welche bivariaten Modelle sind generll möglich?
+
+Latent growth curve model (simples Wachstumskurven Modell) ; Latent
+growth curve model mit time invariant covariate (geschlecht, hautfarbe,
+etc.) Latent growth curve model mit time varying covariate: Mit
+Alkoholkonsum als Kovariate.
+
 ### Warum ist es im Rahmen eines bivariaten Wachstumskurven Modelles sinnvoll, residum der Manifesten Varaiblen korrelieren zu lassen? Wie sollten die Korrelation modelliert werden?
 
-Es ist sinnvoll Die Residuen von Variablen korrelieren zu lassen, die zum gleichen Zeitpunkt gemessen wurden. 
-Ziel ist es Messwellen Effekte zu Kontrollieren: Das Wetter könnte bspw. eine Einfluss auf die Antworten gehabt haben, 
-der zu einem bestimmten Zeitpunkt in beiden Variablen gleich ist.
+Es ist sinnvoll Die Residuen von Variablen korrelieren zu lassen, die
+zum gleichen Zeitpunkt gemessen wurden. Ziel ist es Messwellen Effekte
+zu Kontrollieren: Das Wetter könnte bspw. eine Einfluss auf die
+Antworten gehabt haben, der zu einem bestimmten Zeitpunkt in beiden
+Variablen gleich ist.
+
+### Welche Aussagen können im Rahmen von Time varying LTMs gemacht werden? Welche Aussagen können im Rahmen von fully-multivariate LTMs gemacht werden? Welche Aussagen können im Rahmen von autoregressiven latent trajectory models (ALTs) gemacht werden?
+
+time varying LTMs:
 
 ### Was ist der Unterschied zwischen Modellen mit Time Varying covariates und cross lagged panel modellen?
 
 ### Warum sollte eine Time Varying Covariate zentriert werden?
 
-Weil so die Effekte der Wachstumsfaktoren besser interpretiert werden können: Der 
-Mittelwert der Wachstumsfaktoren entspricht nun dem Mittelwert einer Person mit 
-durchschnittlichen Werten auf den Time Varying Covariates.
+Weil so die Effekte der Wachstumsfaktoren besser interpretiert werden
+können: Der Mittelwert der Wachstumsfaktoren entspricht nun dem
+Mittelwert einer Person mit durchschnittlichen Werten auf den Time
+Varying Covariates.
 
 ### Was ist der Grund für den Einbezug von TVCs in ein growth curve modell?
 
-Es kann getestet werden, ob ein Konstrukt Varianz in einem anderen Konstrukt erklärt (zu verschiednene Zeitpunkten), 
-die über die Erklärte Varianz durch den Wachstumsverlauf des Konstruktes hinaus geht.
-
+Es kann getestet werden, ob ein Konstrukt Varianz in einem anderen
+Konstrukt erklärt (zu verschiednene Zeitpunkten), die über die Erklärte
+Varianz durch den Wachstumsverlauf des Konstruktes hinaus geht.
 
 ## Exercises
 
-### reines Wachstumskurven Modell definieren und fitten sowie die Resultate interpretieren 
+### reines Wachstumskurven Modell definieren und fitten sowie die Resultate interpretieren
 
 ```{r}
 rm(list = ls())
@@ -1668,7 +1749,7 @@ summary(fit10x.1, standardized = TRUE)
 
 ```
 
-### Selbes Modell fitten mit gender als Kovariate 
+### Selbes Modell fitten mit gender als Kovariate
 
 ```{r}
 model10x.2 <- "
@@ -1704,6 +1785,7 @@ copi3m ~~ call3m
 fit10x.2 <- growth(model = model10x.2, data = data, missing = "ML")
 summary(fit10x.2)
 ```
+
 ### Erstellen Sie ein latent growth model mit time varying covariates.
 
 ```{r}
@@ -1746,15 +1828,14 @@ i.rse =~ gender
 "
 ```
 
-
 # Messinvarianz Modelle
-
 
 ## Theoretische Übungen
 
-### Sollten model Constraints die zur Testung von Messinvarianz gesetzt wurden beibehalten werden (wenn Invarianz für dieses Niveau hält)? 
+### Sollten model Constraints die zur Testung von Messinvarianz gesetzt wurden beibehalten werden (wenn Invarianz für dieses Niveau hält)?
 
-Ja: Falls das erforderliche Niveau der Messinvarianz gegeben ist, die entsprechenden Constraints bei den weiteren Analysen verwenden.
+Ja: Falls das erforderliche Niveau der Messinvarianz gegeben ist, die
+entsprechenden Constraints bei den weiteren Analysen verwenden.
 
 ### Wo kann Messinvarianz festgestellt werden?
 
@@ -1762,34 +1843,39 @@ Ja: Falls das erforderliche Niveau der Messinvarianz gegeben ist, die entspreche
 
 ### Welche Arten von Messinvarianz gibt es?
 
-Einfache (Konfigurale), schwache (ladungen sind gleich), starke (intercepts der Indikatoren)
-Strikte: Gleichsetzung der Residualvarianzen.
+Einfache (Konfigurale), schwache (ladungen sind gleich), starke
+(intercepts der Indikatoren) Strikte: Gleichsetzung der
+Residualvarianzen.
 
 ### Was wird in Lavaan fixiiert, bei der Schätzung von Messinvarianz (bereits bei der Konfiguralen)?
 
-Zusätzlich zu der Ladung des ersten Indikators, wird der Mittelwert der ersten latenten Variable = 0 
-und die Standardabweichung = 1 gesetzt. Das ist da für die Identifizierbarkeit des Modells.
+Zusätzlich zu der Ladung des ersten Indikators, wird der Mittelwert der
+ersten latenten Variable = 0 und die Standardabweichung = 1 gesetzt. Das
+ist da für die Identifizierbarkeit des Modells.
 
-### Was stellen wir mit konfiguraler Messinvarianz sicher? 
+### Was stellen wir mit konfiguraler Messinvarianz sicher?
 
-Das Messmodell selber (Items laden auf einem Faktor etc.) aber auch, dass alle 
-Items die gleiche Skala haben (Wir setzen ja die Ladungen des ersten Indikators 
-über alle Messwellen (oder Personengruppen) gleich > folglich gibt es keine relevanten
-Unterschiede, die stark ins Gewicht fallen würden.
+Das Messmodell selber (Items laden auf einem Faktor etc.) aber auch,
+dass alle Items die gleiche Skala haben (Wir setzen ja die Ladungen des
+ersten Indikators über alle Messwellen (oder Personengruppen) gleich \>
+folglich gibt es keine relevanten Unterschiede, die stark ins Gewicht
+fallen würden.
 
-### Wenn wir Mittelwerte zwischen zwei Gruppen (zB. deutschen und schweizer Jugendlichen) auf einer Skala vergleichen wollen, welches Niveau an Messinvarianz braucht es? 
+### Wenn wir Mittelwerte zwischen zwei Gruppen (zB. deutschen und schweizer Jugendlichen) auf einer Skala vergleichen wollen, welches Niveau an Messinvarianz braucht es?
 
 Starke Messinvarianz.
 
 ### Wenn wir ein CLP modell berechnen, welches Invarianz Miveau muss vorliergen? Was erlaubt/ zeigt dieses Niveau an Messinvarianz?
 
-Schwache Messinvarianz (Nur dann dürfen wir korrelationen zwischen den Messzeitpunkten erst berechnen.
-Ein unterschied von 1.0 auf dem Latenten Faktor bedeutet zu jedem Messzeitpunkt das gleiche.
-Erlaubt Test auf Gleichheit der Varianzen der latenten Faktoren.
+Schwache Messinvarianz (Nur dann dürfen wir korrelationen zwischen den
+Messzeitpunkten erst berechnen. Ein unterschied von 1.0 auf dem Latenten
+Faktor bedeutet zu jedem Messzeitpunkt das gleiche. Erlaubt Test auf
+Gleichheit der Varianzen der latenten Faktoren.
 
 ### Was bedeutet Strikte Messinvarianz bezüglich dem Nullpunkt der Skala der latenten Variablen?
 
-Der Nullpunkt der Skala ist in diesem Fall bei allen Variablen der gleiche.
+Der Nullpunkt der Skala ist in diesem Fall bei allen Variablen der
+gleiche.
 
 ## Exercises
 
@@ -1797,7 +1883,6 @@ Der Nullpunkt der Skala ist in diesem Fall bei allen Variablen der gleiche.
 rm(list = ls())
 data = read_xlsx("./data/dallarosa.xlsx")
 ```
-
 
 ### Erstelle ein Konfigurales Messinvarianz Modell über Messzeitpunkte hinweg für calling im dallrosa datensatz.
 
@@ -2052,16 +2137,16 @@ call2 ~~ call3
 fit11x.4 <- lavaan(model11x.4, data = data, missing = "ML")
 ```
 
-### Vergleiche die drei Modelle 
+### Vergleiche die drei Modelle
 
 ```{r}
 summary(compareFit(fit11x.1, fit11x.2, fit11x.3))
 ```
 
-
 ### Teste zudem auf gleichheit der Varianzen und gleichheit der Mittelwerte zwischen den Messzeitpunkten. Welche Modelle müssen dafür verwendet werden?
 
-Für einen Test auf Varianzgleichheit, muss mindestens schwache Invarianz vorliegen > Hier model 11x.2
+Für einen Test auf Varianzgleichheit, muss mindestens schwache Invarianz
+vorliegen \> Hier model 11x.2
 
 ```{r}
 model11x.2.var <- "
@@ -2127,7 +2212,8 @@ summary(compareFit(fit11x.2, fit11x.2.var))
 
 ### Messinvarianz Modell für unterschiedliche Levels von gender aber nur querschnittlich (für call1). Wie können wir die constraints setzen?
 
-Wir können constraints über den group equal parameter setzen oder über constraints in der Modelldefnition.
+Wir können constraints über den group equal parameter setzen oder über
+constraints in der Modelldefnition.
 
 ```{r}
 # here we are setting constraints in the model definition
@@ -2199,4 +2285,3 @@ k1 == k2 # > for residuals (strict)
 "
 
 ```
-
